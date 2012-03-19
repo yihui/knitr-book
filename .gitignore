@@ -1,4 +1,5 @@
 cache-*
 figure/
 knitr-book.*
+*-tikzDictionary
 
