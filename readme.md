@@ -19,7 +19,7 @@ I do not know if this repository can grow into a real book in the end. At the mo
 
 I use the above commands to knit my source documents and convert them into different formats. I work under Ubuntu, and the bash script `./knit` may not work for your OS (it is essentially an R script), but you are encouraged to read its source code to know what is happening behind the scene.
 
-All source files are under the [`source`](source/) directory, and all the rest of markdown files are the output from **knitr**. If you want to modify anything in this repository, please always go to the source directory. In other words, only manage the source, and forget about the output.
+All source files are under the [`source`](https://github.com/yihui/knitr-book/source/) directory, and all the rest of markdown files are the output from **knitr**. If you want to modify anything in this repository, please always go to the source directory. In other words, only manage the source, and forget about the output.
 
 ## Help me
 
