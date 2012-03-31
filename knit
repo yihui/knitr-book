@@ -16,6 +16,8 @@ render_gfm()
 pdf.options(pointsize = 10)  # smaller pointsize for recording plots
 opts_chunk$set(cache=TRUE, fig.path='figure/', dev='Cairo_png',
   fig.width=5, fig.height=5, cache.path = 'cache-local/', par=TRUE)
+## xtable options (generate HTML by default)
+options(xtable.type = 'html', xtable.html.table.attributes = '', table.placement = '')
 
 ## chunk hooks
 knit_hooks$set(par=function(before, options, envir){
@@ -31,6 +33,7 @@ local({
     opts_knit$set(upload.fun = imgur_upload)
     opts_chunk$set(cache.path = 'cache-upload/')
   } else if (fmt == 'pdf') {
+    options(xtable.type = 'latex')
     opts_chunk$set(cache.path = 'cache-pdf/')
     # use high quality tikz graphics for PDF output
     opts_chunk$set(dev = 'tikz', fig.width=4, fig.height=4)
