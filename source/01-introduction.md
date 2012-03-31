@@ -14,8 +14,8 @@ qplot(hp, mpg, data = mtcars) + geom_smooth()
 And here is a table created with the **xtable** package:
 
 ``` {r intro-table, results='asis'}
-library(ascii)
-print(ascii(head(mtcars[, 1:5]), include.rownames = FALSE), type = 'rest')
+library(xtable)
+xtable(head(mtcars[, 1:5]))
 ````
 
 TODO: Sweave. An overview of the following chapters.
