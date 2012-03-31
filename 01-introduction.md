@@ -13,7 +13,7 @@ library(ggplot2)
 qplot(hp, mpg, data = mtcars) + geom_smooth()
 ```
 
-![A sample plot in a dynamic report.](http://i.imgur.com/1i1W6.png) 
+![A sample plot in a dynamic report.](http://i.imgur.com/aDy6W.png) 
 
 
 And here is a table created with the **xtable** package:
@@ -22,12 +22,12 @@ And here is a table created with the **xtable** package:
 
 ```r
 library(xtable)
-print(xtable(head(mtcars[, 1:5])), type = "html")
+xtable(head(mtcars[, 1:5]))
 ```
 
 <!-- html table generated in R 2.14.2 by xtable 1.7-0 package -->
-<!-- Sun Mar 18 21:36:42 2012 -->
-<TABLE border=1>
+<!-- Sat Mar 31 18:37:34 2012 -->
+<TABLE >
 <TR> <TH>  </TH> <TH> mpg </TH> <TH> cyl </TH> <TH> disp </TH> <TH> hp </TH> <TH> drat </TH>  </TR>
   <TR> <TD align="right"> Mazda RX4 </TD> <TD align="right"> 21.00 </TD> <TD align="right"> 6.00 </TD> <TD align="right"> 160.00 </TD> <TD align="right"> 110.00 </TD> <TD align="right"> 3.90 </TD> </TR>
   <TR> <TD align="right"> Mazda RX4 Wag </TD> <TD align="right"> 21.00 </TD> <TD align="right"> 6.00 </TD> <TD align="right"> 160.00 </TD> <TD align="right"> 110.00 </TD> <TD align="right"> 3.90 </TD> </TR>
