@@ -7,17 +7,15 @@ We explain the idea with a trivial example: suppose we need to write the value o
 If you know a dynamic web language such as PHP (can mix HTML and PHP code together), the above idea should look familiar. The above example shows the _inline_ code output, which means source code is mixed inline with a sentence. The other type of output is the _chunk_ output, which gives the results from a whole block of code. The chunk output has much more flexibility; for example, we can produce graphics or tables from a code chunk. Here is a plot created with **ggplot2** dynamically:
 
 
-
 ```r
 library(ggplot2)
 qplot(hp, mpg, data = mtcars) + geom_smooth()
 ```
 
-![A sample plot in a dynamic report.](http://i.imgur.com/aDy6W.png) 
+![A sample plot in a dynamic report.](http://i.imgur.com/Vl3qf.png) 
 
 
 And here is a table created with the **xtable** package:
-
 
 
 ```r
@@ -25,8 +23,8 @@ library(xtable)
 xtable(head(mtcars[, 1:5]))
 ```
 
-<!-- html table generated in R 2.14.2 by xtable 1.7-0 package -->
-<!-- Sat Mar 31 18:37:34 2012 -->
+<!-- html table generated in R 2.15.1 by xtable 1.7-0 package -->
+<!-- Fri Oct 26 14:24:04 2012 -->
 <TABLE >
 <TR> <TH>  </TH> <TH> mpg </TH> <TH> cyl </TH> <TH> disp </TH> <TH> hp </TH> <TH> drat </TH>  </TR>
   <TR> <TD align="right"> Mazda RX4 </TD> <TD align="right"> 21.00 </TD> <TD align="right"> 6.00 </TD> <TD align="right"> 160.00 </TD> <TD align="right"> 110.00 </TD> <TD align="right"> 3.90 </TD> </TR>
@@ -36,7 +34,6 @@ xtable(head(mtcars[, 1:5]))
   <TR> <TD align="right"> Hornet Sportabout </TD> <TD align="right"> 18.70 </TD> <TD align="right"> 8.00 </TD> <TD align="right"> 360.00 </TD> <TD align="right"> 175.00 </TD> <TD align="right"> 3.15 </TD> </TR>
   <TR> <TD align="right"> Valiant </TD> <TD align="right"> 18.10 </TD> <TD align="right"> 6.00 </TD> <TD align="right"> 225.00 </TD> <TD align="right"> 105.00 </TD> <TD align="right"> 2.76 </TD> </TR>
    </TABLE>
-
 
 
 TODO: Sweave. An overview of the following chapters.
