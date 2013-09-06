@@ -1,0 +1,4942 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass krantz
+\begin_preamble
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\topfraction}{0.8}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\floatpagefraction}{0.75}
+
+% for andre simon's highlight
+\let\hlslc\hlcom \let\hlppc\hlcom
+\let\hlesc\hlstd \let\hlpps\hlstd \let\hllin\hlstd
+
+\usepackage{emptypage}
+\end_preamble
+\use_default_options true
+\begin_modules
+knitr
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package none
+\inputencoding utf8
+\fontencoding global
+\font_roman palatino
+\font_sans lmss
+\font_typewriter lmtt
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered true
+\pdf_bookmarksopen true
+\pdf_bookmarksopenlevel 3
+\pdf_breaklinks true
+\pdf_pdfborder false
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine natbib_authoryear
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 2
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<setup, include=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+library(knitr)
+\end_layout
+
+\begin_layout Plain Layout
+
+options(width=55, replace.assign=TRUE)
+\end_layout
+
+\begin_layout Plain Layout
+
+opts_chunk$set(cache=TRUE, dev='tikz', fig.path='figure-book/', cache.path='cache-
+book/', fig.width=5, fig.height=5,
+\end_layout
+
+\begin_layout Plain Layout
+
+               fig.align='center', error=FALSE)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+knit_hooks$set(par = function(before, options, envir) {
+\end_layout
+
+\begin_layout Plain Layout
+
+    if (before && options$fig.show != "none") {
+\end_layout
+
+\begin_layout Plain Layout
+
+        par(mar = c(4, 4, 0.1, 0.1), cex.lab = 0.95, cex.axis = 0.9, mgp = c(2,
+ 0.7, 
+\end_layout
+
+\begin_layout Plain Layout
+
+            0), tcl = -0.3, las = 1)
+\end_layout
+
+\begin_layout Plain Layout
+
+        if (is.list(options$par)) 
+\end_layout
+
+\begin_layout Plain Layout
+
+            do.call(par, options$par)
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+}, document = function(x) {
+\end_layout
+
+\begin_layout Plain Layout
+
+  x = gsub('(
+\backslash
+
+\backslash
+
+\backslash
+
+\backslash
+begin
+\backslash
+
+\backslash
+{tabular
+\backslash
+
+\backslash
+})', '
+\backslash
+
+\backslash
+
+\backslash
+
+\backslash
+medskip{}
+\backslash
+n
+\backslash
+
+\backslash
+1', hook_movecode(x))
+\end_layout
+
+\begin_layout Plain Layout
+
+  gsub('
+\backslash
+
+\backslash
+
+\backslash
+
+\backslash
+end
+\backslash
+
+\backslash
+{alltt
+\backslash
+
+\backslash
+}
+\backslash
+n*
+\backslash
+
+\backslash
+
+\backslash
+
+\backslash
+begin
+\backslash
+
+\backslash
+{alltt
+\backslash
+
+\backslash
+}
+\backslash
+n', '', x)
+\end_layout
+
+\begin_layout Plain Layout
+
+})
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+Dynamic Documents with R and knitr
+\end_layout
+
+\begin_layout Author
+Yihui Xie
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+pagenumbering{gobble}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chapter*
+Note
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+pagenumbering{roman}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{empty}
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This PDF document only contains the first three chapters, released with
+ permission of Chapman & Hall.
+ The complete book is available on Amazon (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.amazon.com/gp/product/1482203537
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+For those who are interested in writing a book with Chapman & Hall, the
+ LyX and Rnw source files are freely available in the repository 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://github.com/yihui/knitr-book
+\end_layout
+
+\end_inset
+
+.
+ Hopefully this template can help beginners eliminate 90% of the possible
+ LaTeX problems, e.g.,
+\end_layout
+
+\begin_layout Itemize
+make odd-numbered pages recto, and even-numbered pages verso
+\end_layout
+
+\begin_layout Itemize
+leave a desired number of blank pages (note that eventually you should remove
+ this page, since this page is here only for trim marks to be correctly
+ generated on blank pages)
+\end_layout
+
+\begin_layout Itemize
+different page numbering styles
+\end_layout
+
+\begin_layout Itemize
+correct order of the items in the table of contents
+\end_layout
+
+\begin_layout Itemize
+blank pages after each chapter
+\end_layout
+
+\begin_layout Itemize
+...
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{empty}
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{empty}
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{empty}
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{empty}
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{empty}
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{empty}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+
+\size larger
+To my parents
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Shaobai Xie 
+\emph on
+and
+\emph default
+ Guolan Xie
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chapter*
+Preface
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+addcontentsline{toc}{chapter}{Preface}
+\end_layout
+
+\end_inset
+
+We import a dataset into a statistical software package, run a procedure
+ to get all results, then copy and paste selected pieces into a typesetting
+ program, add a few descriptions, and finish a report.
+ This is a common practice of writing statistical reports.
+ There are obvious dangers and disadvantages in this process:
+\end_layout
+
+\begin_layout Enumerate
+it is error-prone due to too much manual work;
+\end_layout
+
+\begin_layout Enumerate
+it requires lots of human effort to do tedious jobs such as copying results
+ across documents;
+\end_layout
+
+\begin_layout Enumerate
+the workflow is barely recordable especially when it involves GUI (Graphical
+ User Interface) operations, therefore it is difficult to reproduce;
+\end_layout
+
+\begin_layout Enumerate
+a tiny change of the data source in the future will require the author(s)
+ to go through the same procedure again, which can take nearly the same
+ amount of time and effort;
+\end_layout
+
+\begin_layout Enumerate
+the analysis and writing are separate, so close attention has to be paid
+ to the synchronization of the two parts.
+\end_layout
+
+\begin_layout Standard
+In fact, a report can be generated dynamically from program code.
+ Just like a software package has its source code, a dynamic document is
+ the source code of a report.
+ It is a combination of computer code and the corresponding narratives.
+ When we compile the dynamic document, the program code in it is executed
+ and replaced with the output; we get a final report by mixing the code
+ output with the narratives.
+ Because we only manage the source code, we are free of all the possible
+ problems above.
+ For example, we can change a single parameter in the source code, and get
+ a different report on the fly.
+\end_layout
+
+\begin_layout Standard
+In this book, 
+\emph on
+dynamic documents
+\emph default
+ refer to the kind of source documents containing both program code and
+ narratives.
+ Sometimes we may just call them 
+\emph on
+source documents
+\emph default
+ since 
+\begin_inset Quotes eld
+\end_inset
+
+dynamic
+\begin_inset Quotes erd
+\end_inset
+
+ may sound confusing and ambiguous to some people (it does not mean interactivit
+y or animations).
+ We also use the term 
+\emph on
+report
+\emph default
+ frequently throughout the book, which really means the output document
+ compiled from a dynamic document.
+\end_layout
+
+\begin_layout Section*
+Who Should Read This Book
+\end_layout
+
+\begin_layout Standard
+This book is written for both beginners and advanced users.
+ The main goal is to make writing reports easier: the 
+\begin_inset Quotes eld
+\end_inset
+
+report
+\begin_inset Quotes erd
+\end_inset
+
+ here can range from student homework or project reports, exams, books,
+ blogs, and web pages to virtually any documents related to statistical
+ graphics, computing, and data analysis.
+\end_layout
+
+\begin_layout Standard
+For beginners, Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:intro"
+
+\end_inset
+
+ to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:cache"
+
+\end_inset
+
+ should be enough for basic applications (which have already covered many
+ features); for power users, Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:reference"
+
+\end_inset
+
+ to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:engines"
+
+\end_inset
+
+ can be helpful for understanding the extensibility of the 
+\series bold
+knitr
+\series default
+ package.
+\end_layout
+
+\begin_layout Standard
+Familiarity with LaTeX and HTML can be helpful, but is not required at all;
+ once we get the basic idea, we can write reports in simple languages such
+ as Markdown.
+ Unless otherwise noted, all features apply to all document formats, although
+ we primarily use LaTeX for examples.
+\end_layout
+
+\begin_layout Standard
+We recommend the readers to take a look at the Web site RPubs (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://rpubs.com
+\end_layout
+
+\end_inset
+
+), which contains a large number of user-contributed documents.
+ Hopefully they are convincing enough to show it is quick and easy to write
+ dynamic documents.
+\end_layout
+
+\begin_layout Section*
+Software Information and Conventions
+\end_layout
+
+\begin_layout Standard
+The main tools we introduce in this book are the R language 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "R-base"
+
+\end_inset
+
+ and the 
+\series bold
+knitr
+\series default
+ package 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "R-knitr"
+
+\end_inset
+
+, with which this book was written, but the language in the documents is
+ not restricted to R; for example, we can also integrate Python, awk, and
+ shell scripts, etc., into the reports.
+ For document formats, we mainly use LaTeX, HTML, and Markdown.
+\end_layout
+
+\begin_layout Standard
+Both R and 
+\series bold
+knitr
+\series default
+ are available on CRAN (Comprehensive R Archive Network) as free and open-source
+ software: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://cran.r-project.org
+\end_layout
+
+\end_inset
+
+.
+ Their version information for this book can be found in the session information
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<session-info, cache=FALSE, tidy.opts=list(replace.assign=FALSE)>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+print(sessionInfo(), locale=FALSE)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\series bold
+knitr
+\series default
+ package is documented on the Web site 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://yihui.name/knitr/
+\end_layout
+
+\end_inset
+
+, and the most important page is perhaps 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://yihui.name/knitr/options
+\end_layout
+
+\end_inset
+
+, where we can find the complete reference for chunk options (Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:chunk-options"
+
+\end_inset
+
+).
+ The development version is hosted on Github: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://github.com/yihui/knitr
+\end_layout
+
+\end_inset
+
+; you can always check out the latest development version, file issues/feature
+ requests, or even participate in the development by forking the repository
+ and making changes by yourself.
+ There are plenty of examples in the repository 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://github.com/yihui/knitr-examples
+\end_layout
+
+\end_inset
+
+, including both minimal and advanced examples.
+ There is also a wiki page maintained by Frank Harrell 
+\emph on
+et al.
+
+\emph default
+ from the Department of Biostatistics, Vanderbilt University, which introduced
+ several tricks and useful experience of using 
+\series bold
+knitr
+\series default
+: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://biostat.mc.vanderbilt.edu
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Unlike many other books on R, we do not add prompts to R source code in
+ this book, and we comment out the text output by two hashes 
+\family typewriter
+##
+\family default
+ by default, as you can see above.
+ The reason for this convention is explained in Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:text"
+
+\end_inset
+
+.
+ Package names are in bold text (e.g., 
+\series bold
+rpart
+\series default
+), function names in italic (e.g., 
+\emph on
+paste()
+\emph default
+), inline code is formatted in a typewriter font (e.g., 
+\family typewriter
+mean(1:10, trim = 0.1)
+\family default
+), and filenames are in sans serif fonts (e.g., 
+\family sans
+figure/foo.pdf
+\family default
+).
+\end_layout
+
+\begin_layout Section*
+Structure of the Book
+\end_layout
+
+\begin_layout Standard
+Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:intro"
+
+\end_inset
+
+ is an overview of dynamic documents, introducing the idea of literate programmi
+ng; Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:rr"
+
+\end_inset
+
+ explains why dynamic documents are important to scientific research from
+ the viewpoint of reproducible research; Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:first"
+
+\end_inset
+
+ gives a first complete example that covers basic concepts and what we can
+ do with 
+\series bold
+knitr
+\series default
+; Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:editors"
+
+\end_inset
+
+ introduces a few common text editors that support 
+\series bold
+knitr
+\series default
+, so that it is easier to compile reports from source documents; and Chapter
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:formats"
+
+\end_inset
+
+ describes the syntax for different document formats such as LaTeX, HTML,
+ and Markdown.
+\end_layout
+
+\begin_layout Standard
+Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:text"
+
+\end_inset
+
+ to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:engines"
+
+\end_inset
+
+ explain the core functionality of the package.
+ Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:text"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:graphics"
+
+\end_inset
+
+ present how to control text and graphics output from 
+\series bold
+knitr
+\series default
+, respectively; Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:cache"
+
+\end_inset
+
+ talks about the caching mechanism that may significantly reduce the computation
+ time; Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:reference"
+
+\end_inset
+
+ shows how to reuse source code by chunk references and organize child documents
+; Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:hooks"
+
+\end_inset
+
+ consists of an advanced topic --- chunk hooks, which make a literate programmin
+g document really programmable and extensible; and Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:engines"
+
+\end_inset
+
+ illustrates how to integrate other languages, such as Python and awk, etc.
+ into one report in the 
+\series bold
+knitr
+\series default
+ framework.
+\end_layout
+
+\begin_layout Standard
+Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:tricks"
+
+\end_inset
+
+ introduces some useful tricks that make it easier to write documents with
+ 
+\series bold
+knitr
+\series default
+; Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:publish"
+
+\end_inset
+
+ shows how to publish reports in a variety of formats including PDF, HTML,
+ and HTML5 slides; Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:applications"
+
+\end_inset
+
+ covers a few significant applications; and Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:other"
+
+\end_inset
+
+ introduces other tools for dynamic report generation, such as Sweave, other
+ R packages, and software in other languages.
+ Appendix 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:internals"
+
+\end_inset
+
+ is a guide to some internal structures of 
+\series bold
+knitr
+\series default
+, which may be helpful to other package developers.
+\end_layout
+
+\begin_layout Standard
+The topics from Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:text"
+
+\end_inset
+
+ to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:engines"
+
+\end_inset
+
+ are parallel to each other.
+ For example, if you want to know more about graphics output, you can skip
+ Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:text"
+
+\end_inset
+
+ and jump to Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:graphics"
+
+\end_inset
+
+ directly.
+\end_layout
+
+\begin_layout Standard
+In all, we will show how to improve our efficiency in writing reports, fine
+ tune every aspect of a report, and go from program output to publication
+ quality reports.
+\end_layout
+
+\begin_layout Section*
+Acknowledgments
+\end_layout
+
+\begin_layout Standard
+First, I want to thank my wireless router, which was broken when I started
+ writing the core chapters of this book (in the boring winter of Ames).
+ Besides, I also thank my wife for not giving me the Ethernet cable during
+ that period.
+\end_layout
+
+\begin_layout Standard
+This book would certainly not have been possible without the powerful R
+ language, for which I thank the R core team and its contributors.
+ The seminal work of Sweave (by Friedrich Leisch and R-core) is the most
+ important source of inspiration of 
+\series bold
+knitr
+\series default
+.
+ Some additional features were inspired by other R packages including 
+\series bold
+cacheSweave
+\series default
+ (Roger Peng), 
+\series bold
+pgfSweave
+\series default
+ (Cameron Bracken and Charlie Sharpsteen), 
+\series bold
+weaver
+\series default
+ (Seth Falcon), 
+\series bold
+SweaveListingUtils
+\series default
+ (Peter Ruckdeschel), 
+\series bold
+highlight
+\series default
+ (Romain Francois), and 
+\series bold
+brew
+\series default
+ (Jeffrey Horner).
+ The initial design was based on Hadley Wickham's 
+\series bold
+decumar
+\series default
+ package, and the evaluator is based on his 
+\series bold
+evaluate
+\series default
+ package.
+ Both LyX and RStudio quickly included support to 
+\series bold
+knitr
+\series default
+ after it came out, which made it a lot easier to write source documents,
+ and I'd like to thank their developers (especially Jean-Marc Lasgouttes,
+ JJ Allaire, and Joe Cheng); similarly I thank the developers of other editors
+ such as Emacs/ESS.
+\end_layout
+
+\begin_layout Standard
+The R/
+\series bold
+knitr
+\series default
+ user community is truly amazing.
+ There has been a lot of feedback since the beginning of its development
+ in late 2011.
+ I still remember some users shouted it from the rooftops when I released
+ the first beta version.
+ I appreciate this kind of excitement.
+ Hundreds of questions and comments in the mailing list (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://groups.google.com/group/knitr
+\end_layout
+
+\end_inset
+
+) and on StackOverflow (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://stackoverflow.com/questions/tagged/knitr
+\end_layout
+
+\end_inset
+
+) made this package far more powerful than I imagined.
+ The development repository is on Github, where I have received nearly 500
+ issues and more than 50 pull requests (patches) from several contributors
+ (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://github.com/yihui/knitr/pulls
+\end_layout
+
+\end_inset
+
+), including Ramnath Vaidyanathan, Taiyun Wei, and J.J.
+ Allaire.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<knitr-contributors, eval=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+# to see a full list of contributors
+\end_layout
+
+\begin_layout Plain Layout
+
+packageDescription('knitr', fields='Authors@R')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+I thank my PhD advisors at Iowa State University, Di Cook and Heike Hofmann,
+ for their open-mindedness and consistent support for my research in this
+ 
+\begin_inset Quotes eld
+\end_inset
+
+non-classical
+\begin_inset Quotes erd
+\end_inset
+
+ area of statistics.
+\end_layout
+
+\begin_layout Standard
+Lastly I thank the reviewers Frank Harrell, Douglas Bates, Carl Boettiger,
+ Joshua Wiley, and Scott Kostyshak for their valuable advice on improving
+ the quality of this book (which is the first book of my career), and I'm
+ grateful to the editor John Kimmel, without whom I would not have been
+ able to publish my first book quickly.
+\end_layout
+
+\begin_layout Standard
+\align right
+Yihui Xie
+\begin_inset Newline newline
+\end_inset
+
+Ames, IA
+\end_layout
+
+\begin_layout Chapter*
+Author
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+addcontentsline{toc}{chapter}{Author}
+\end_layout
+
+\end_inset
+
+Yihui Xie (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://yihui.name
+\end_layout
+
+\end_inset
+
+) is a PhD student in the Department of Statistics, Iowa State University.
+ His research interests include interactive statistical graphics and statistical
+ computing.
+ He is an active R user and the author of several R packages, such as 
+\series bold
+animation
+\series default
+, 
+\series bold
+formatR
+\series default
+, 
+\series bold
+Rd2roxygen
+\series default
+, and 
+\series bold
+knitr
+\series default
+, among which the 
+\series bold
+animation
+\series default
+ package won the 2009 John M.
+ Chambers Statistical Software Award (ASA), and the 
+\series bold
+knitr
+\series default
+ package was awarded the 
+\begin_inset Quotes eld
+\end_inset
+
+Honorable Mention
+\begin_inset Quotes erd
+\end_inset
+
+ prize in the 
+\begin_inset Quotes eld
+\end_inset
+
+Applications of R in Business Contest 2012
+\begin_inset Quotes erd
+\end_inset
+
+ thanks to Revolution Analytics.
+\end_layout
+
+\begin_layout Standard
+In 2006 he founded the 
+\begin_inset Quotes eld
+\end_inset
+
+Capital of Statistics
+\begin_inset Quotes erd
+\end_inset
+
+ (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://cos.name
+\end_layout
+
+\end_inset
+
+), which has grown into a large online community on statistics in China.
+ He initiated the first Chinese R conference in 2008 and has been organizing
+ R conferences in China since then.
+ During his PhD training at the Iowa State University, he won the Vince
+ Sposito Statistical Computing Award (2011) and the Snedecor Award (2012)
+ in the Department of Statistics.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage cleardoublepage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+phantomsection
+\backslash
+addcontentsline{toc}{chapter}{List of Figures}
+\end_layout
+
+\end_inset
+
+
+\begin_inset FloatList figure
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage cleardoublepage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+phantomsection
+\backslash
+addcontentsline{toc}{chapter}{List of Tables}
+\end_layout
+
+\end_inset
+
+
+\begin_inset FloatList table
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chapter
+Introduction
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:intro"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+pagenumbering{arabic}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The basic idea behind dynamic documents stems from 
+\emph on
+literate programming
+\emph default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+literate programming
+\end_layout
+
+\end_inset
+
+, a programming paradigm conceived by Donald Knuth 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "knuth1984"
+
+\end_inset
+
+.
+ The original idea was mainly for writing software: mix the source code
+ and documentation together; we can either extract the source code out (called
+ 
+\emph on
+tangle
+\emph default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+tangle
+\end_layout
+
+\end_inset
+
+) or execute the code to get the compiled results (called 
+\emph on
+weave
+\emph default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+weave
+\end_layout
+
+\end_inset
+
+).
+ A dynamic document is not entirely different from a computer program: for
+ a dynamic document, we need to run software packages to compile our ideas
+ (often implemented as source code) into numeric or graphical output, and
+ insert the output into our literal writings (like documentation).
+\end_layout
+
+\begin_layout Standard
+We explain the idea with a trivial example: suppose we need to write the
+ value of 
+\begin_inset Formula $2\pi$
+\end_inset
+
+ into a report; of course, we can directly write the number 
+\begin_inset Formula $\Sexpr{2*pi}$
+\end_inset
+
+.
+ Now, if I change my mind and I want 
+\begin_inset Formula $6\pi$
+\end_inset
+
+ instead, I may have to find a calculator, erase the previous value, and
+ write the new answer.
+ Since it is extremely easy for the computer to calculate 
+\begin_inset Formula $6\pi$
+\end_inset
+
+, why not leave this job to the computer completely and free oneself from
+ this kind of manual work? What we need to do is to leave the source code
+ in the document instead of a hard-coded value, and tell the computer how
+ to find and execute the source code.
+ Usually we use special markers for computer code in the source report,
+ e.g., we can write
+\end_layout
+
+\begin_layout Verse
+
+\family typewriter
+The correct answer is {{ 6 * pi }}.
+\end_layout
+
+\begin_layout Standard
+in which 
+\family typewriter
+{{
+\family default
+ and 
+\family typewriter
+}}
+\family default
+ is a pair of markers that tell the computer 
+\family typewriter
+6 * pi
+\family default
+ is the source code and should be executed.
+ Note here 
+\family typewriter
+pi
+\family default
+ (
+\begin_inset Formula $\pi$
+\end_inset
+
+) is a constant in R.
+\end_layout
+
+\begin_layout Standard
+If you know a web scripting language such as PHP (which can embed program
+ code into HTML documents), this idea should look familiar.
+ The above example shows the 
+\emph on
+inline
+\emph default
+ code output, which means source code is mixed inline with a sentence.
+ The other type of output is the 
+\emph on
+chunk
+\emph default
+ output, which gives the results from a whole block of code.
+ The chunk output has much more flexibility; for example, we can produce
+ graphics and tables from a code chunk.
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:intro-plot"
+
+\end_inset
+
+ was dynamically created with a chunk of R code, which is printed below:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<intro-plot, fig.height=2, par=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+set.seed(1213)  # for reproducibility of random numbers
+\end_layout
+
+\begin_layout Plain Layout
+
+x = cumsum(rnorm(100))
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(x, type = 'l', ylab = '$x_{i+1}=x_i + 
+\backslash
+
+\backslash
+epsilon_{i+1}$', xlab = 'step')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+A simulation of the Brownian motion
+\end_layout
+
+\end_inset
+
+A simulation of the Brownian motion for 100 steps: 
+\begin_inset Formula $x_{1}=\epsilon_{1},\, x_{i+1}=x_{i}+\epsilon_{i+1},\,\epsilon_{i}\overset{iid}{\sim}N(0,1),\, i=1,2,\cdots,100$
+\end_inset
+
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:intro-plot"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If we were to do this by hand, we would have to open R, paste the code into
+ the R console to draw the plot, save it as a PDF file, and insert it into
+ a LaTeX document with 
+\family typewriter
+
+\backslash
+includegraphics{}
+\family default
+.
+ This is both tedious for the author and difficult to maintain --- supposing
+ we want to change the random seed in 
+\emph on
+set.seed()
+\emph default
+, increase the number of steps, or use a scatterplot instead of a line graph,
+ we will have to update both the source code and the output.
+ In practice, the computing and analysis can be far more complicated than
+ the toy example in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:intro-plot"
+
+\end_inset
+
+, and more manual work will be required accordingly.
+\end_layout
+
+\begin_layout Standard
+The spirit of dynamic documents may best be described by the philosophy
+ of the ESS
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ESS
+\end_layout
+
+\end_inset
+
+ project 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "rossini2004"
+
+\end_inset
+
+ for the S language:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{VF}
+\end_layout
+
+\begin_layout Plain Layout
+
+The source code is real.
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+VA{Philosophy for using ESS[S]}{}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{VF}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Since the output can be produced by the source code, we can maintain the
+ source code only.
+ However, in most cases, the direct output from the source code alone does
+ not constitute a report that is readable for a human.
+ That is why we need the literate programming paradigm.
+ In this paradigm, an author has two tasks:
+\end_layout
+
+\begin_layout Enumerate
+write program code to do computing, and
+\end_layout
+
+\begin_layout Enumerate
+write narratives to explain what is being done by the program code
+\end_layout
+
+\begin_layout Standard
+The traditional approach to doing the second task is to write comments for
+ the code, but comments are often limited in terms of expressing the full
+ thoughts of the authors.
+ Normally we write our ideas in a paper or a report instead of hundreds
+ of lines of code comments.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{VF}
+\end_layout
+
+\begin_layout Plain Layout
+
+Let us change our traditional attitude to the construction of programs:
+\end_layout
+
+\begin_layout Plain Layout
+
+Instead of imagining that our main task is to instruct a computer what to
+ do,
+\end_layout
+
+\begin_layout Plain Layout
+
+let us concentrate rather on explaining to humans what we want the computer
+ to do.
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+VA{Donald E.
+ Knuth}{Literate Programming, 1984}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{VF}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Technically, literate programming involves three steps:
+\end_layout
+
+\begin_layout Enumerate
+parse the source document and separate code from narratives
+\end_layout
+
+\begin_layout Enumerate
+execute source code and return results
+\end_layout
+
+\begin_layout Enumerate
+mix results from the source code with the original narratives
+\end_layout
+
+\begin_layout Standard
+These steps can be implemented in software packages, so the authors do not
+ need to take care of these technical details.
+ Instead, we only control what the output should look like.
+ There are many details that we can tune for a report (especially for reports
+ related to data analysis), although the idea of literate programming seems
+ to be simple.
+ For example, data reports often include tables, and Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:intro-table"
+
+\end_inset
+
+ is a table generated from the R code below using the 
+\emph on
+kable()
+\emph default
+ function in 
+\series bold
+knitr
+\series default
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<intro-table, results='hide', echo=-3>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+library(knitr)
+\end_layout
+
+\begin_layout Plain Layout
+
+kable(head(mtcars[,1:6]))
+\end_layout
+
+\begin_layout Plain Layout
+
+mtcars.tab=kable(head(mtcars[, 1:6]), vline='', toprule=NULL, bottomrule=NULL,
+ output=FALSE)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+A subset of the 
+\family typewriter
+mtcars
+\family default
+ dataset
+\end_layout
+
+\end_inset
+
+A subset of the 
+\family typewriter
+mtcars
+\family default
+ dataset: the first 6 rows and 6 columns.
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:intro-table"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{mtcars.tab}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Think how easy it is to maintain two lines of R code compared to maintaining
+ many lines of messy LaTeX code!
+\end_layout
+
+\begin_layout Standard
+Generating reports dynamically by integrating computer code with narratives
+ is not only easier, but also closely related to reproducible research,
+ which we will discuss in the next chapter.
+\end_layout
+
+\begin_layout Chapter
+Reproducible Research
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:rr"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Results from scientific research have to be reproducible to be trustworthy.
+ We do not want a finding to be merely due to an isolated occurrence, e.g.,
+ only one specific laboratory researcher can produce the results on one
+ specific day, and nobody else can produce the same results under the same
+ conditions.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+reproducible research
+\end_layout
+
+\end_inset
+
+Reproducible research (RR) is one possible by-product of dynamic documents,
+ but dynamic documents do not absolutely guarantee RR.
+ Because there is usually no human intervention when we generate a report
+ dynamically, it is likely to be reproducible since it is relatively easy
+ to prepare the same software and hardware environment, which is everything
+ we need to reproduce the results.
+ However, the meaning of reproducibility can be beyond reproducing one result
+ or one report.
+ As a trivial example, one might have done a Monte Carlo simulation with
+ a certain random seed and got a good estimate of a parameter, but the result
+ was actually due to a 
+\begin_inset Quotes eld
+\end_inset
+
+lucky
+\begin_inset Quotes erd
+\end_inset
+
+ random seed
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+random seed
+\end_layout
+
+\end_inset
+
+.
+ Although we can strictly reproduce the estimate, it is not actually reproducibl
+e in the general sense.
+ Similar problems exist in optimization algorithms, e.g., different starting
+ values can lead to different roots of the same equation.
+\end_layout
+
+\begin_layout Standard
+Anyway, dynamic report generation is still an important step towards RR.
+ In this chapter, we discuss a selection of the RR literature and practices
+ of RR.
+\end_layout
+
+\begin_layout Section
+Literature
+\end_layout
+
+\begin_layout Standard
+The term reproducible research was first proposed by Jon Claerbout at Stanford
+ University 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "fomel2009"
+
+\end_inset
+
+.
+ The idea is that the final product of research is not only the paper itself,
+ but also the full computational environment used to produce the results
+ in the paper such as the code and data necessary for reproduction of the
+ results and building upon the research.
+\end_layout
+
+\begin_layout Standard
+Similarly, 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "buckheit1995"
+
+\end_inset
+
+ pointed out the essence of the scholarship of an article as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{VF}
+\end_layout
+
+\begin_layout Plain Layout
+
+An article about computational science in a scientific publication
+\end_layout
+
+\begin_layout Plain Layout
+
+is not the scholarship itself, it is merely advertising of the scholarship.
+\end_layout
+
+\begin_layout Plain Layout
+
+The actual scholarship is the complete software development environment
+ and
+\end_layout
+
+\begin_layout Plain Layout
+
+the complete set of instructions which generated the figures.
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+VA{D.
+ Donoho}{WaveLab and Reproducible Research}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{VF}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+That was well said! Fortunately, journals have been moving in that direction
+ as well.
+ For example, 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "peng2009"
+
+\end_inset
+
+ provided detailed instructions to authors on the criteria of reproducibility
+ and how to submit materials for reproducing the paper in the 
+\emph on
+Biostatistics
+\emph default
+ journal.
+\end_layout
+
+\begin_layout Standard
+At the technical level, RR is often related to literate programming 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "knuth1984"
+
+\end_inset
+
+, a paradigm conceived by Donald Knuth to integrate computer code with software
+ documentation in one document.
+ However, early implementations like WEB
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+WEB
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "knuth1983"
+
+\end_inset
+
+ and Noweb
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Noweb
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "ramsey1994"
+
+\end_inset
+
+ were not directly suitable for data analysis and report generation.
+ There are other tools on this path of documentation generation, such as
+ 
+\series bold
+roxygen2
+\series default
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "R-roxygen2"
+
+\end_inset
+
+, which is an R implementation of Doxygen 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "heesch2008"
+
+\end_inset
+
+.
+ Sweave
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Sweave
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "leisch2002"
+
+\end_inset
+
+ was among the first implementations for dealing with dynamic documents
+ in R 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "ihaka1996,R-base"
+
+\end_inset
+
+.
+ There are still a number of challenges that were not solved by the existing
+ tools; for example, Sweave is closely tied to LaTeX and hard to extend.
+ The 
+\series bold
+knitr
+\series default
+ package 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "R-knitr"
+
+\end_inset
+
+ was built upon the ideas of previous tools with a framework redesign, enabling
+ easy and fine control of many aspects of a report.
+ We will introduce other tools in Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:other"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+An overview of literate programming applied to statistical analysis can
+ be found in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "rossini2002"
+
+\end_inset
+
+.
+ 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "gentleman2004"
+
+\end_inset
+
+ introduced general concepts of literate programming documents for statistical
+ analysis, with a discussion of the software architecture.
+ 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "gentleman2005"
+
+\end_inset
+
+ is a practical example based on 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "gentleman2004"
+
+\end_inset
+
+, using an R package 
+\series bold
+GolubRR
+\series default
+ to distribute reproducible analysis.
+ 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "baggerly2004"
+
+\end_inset
+
+ revealed several problems that may arise with the standard practice of
+ publishing data analysis results, which can lead to false discoveries due
+ to lack of details for reproducibility (even with datasets supplied).
+ Instead of separating results from computing, we can put everything in
+ one document (called a 
+\emph on
+compendium
+\emph default
+ in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "gentleman2004"
+
+\end_inset
+
+), including the computer code and narratives.
+ When we compile this document, the computer code will be executed, giving
+ us the results directly.
+\end_layout
+
+\begin_layout Section
+Good and Bad Practices
+\end_layout
+
+\begin_layout Standard
+The key to keep in mind for RR is that other people should be able to reproduce
+ our results, therefore we should try our best to make our computation 
+\emph on
+portable
+\emph default
+.
+ We discuss some good practices for RR below and explain why it can be bad
+ not to follow them.
+\end_layout
+
+\begin_layout Itemize
+Manage all source files under the same directory and use relative paths
+ whenever possible: absolute paths can break reproducibility, e.g., a data
+ file like 
+\family sans
+C:/Users/someone/foo.csv
+\family default
+ or 
+\family sans
+/home/someone/foo.csv
+\family default
+ may only exist in one computer, and other people may not be able to read
+ it since the absolute path is likely to be different in their hard disk.
+ If we keep everything under the same directory, we can read a data file
+ with 
+\family typewriter
+read.csv('foo.csv')
+\family default
+ (if it is under the current working directory) or 
+\family typewriter
+read.csv('../data/foo.csv')
+\family default
+ (go one level up and find the file under the 
+\family sans
+data/
+\family default
+ directory); when we disseminate the results, we can make an archive of
+ the whole directory (e.g., as a zip package).
+\end_layout
+
+\begin_layout Itemize
+Do not change the working directory after the computing has started: 
+\emph on
+setwd()
+\emph default
+ is the function in R to set the working directory, and it is not uncommon
+ to see 
+\family typewriter
+setwd('path/to/some/dir')
+\family default
+ in user's code, which is bad because it is not only an absolute path, but
+ also has a global effect on the rest of the source document.
+ In that case, we have to keep in mind that all relative paths may need
+ adjustments since the root directory has changed, and the software may
+ write the output in an unexpected place (e.g., the figures are expected to
+ be generated in the 
+\family sans
+./figures/
+\family default
+ directory, but are actually written to 
+\family sans
+./data/figures/
+\family default
+ instead if we 
+\family typewriter
+setwd('./data/')
+\family default
+).
+ If we have to set the working directory at all, do it in the very beginning
+ of an R session; most of the editors to be introduced in Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:editors"
+
+\end_inset
+
+ follow this rule, and the working directory is set to the directory of
+ the source document before 
+\series bold
+knitr
+\series default
+ is called to compile documents.
+\end_layout
+
+\begin_layout Itemize
+Compile the documents in a clean R session: existing R objects in the current
+ R session may 
+\begin_inset Quotes eld
+\end_inset
+
+contaminate
+\begin_inset Quotes erd
+\end_inset
+
+ the results in the output.
+ It is fine if we write a report by accumulating code chunks one by one
+ and running them interactively to check the results, but in the end we
+ should compile a report in the batch mode with a new R session so all the
+ results are freshly generated from the code.
+\end_layout
+
+\begin_layout Itemize
+Avoid the commands that require human interaction: human input can be highly
+ unpredictable, e.g., we do not know for sure which file the user will choose
+ if we pop up a dialog box asking the user to choose a data file.
+ Instead of using functions like 
+\emph on
+file.choose()
+\emph default
+ to input a file to 
+\emph on
+read.table()
+\emph default
+, we should write the filename explicitly, e.g., 
+\family typewriter
+read.table('a-specific-file.txt')
+\family default
+.
+\end_layout
+
+\begin_layout Itemize
+Avoid environment variables for data analysis: while environment variables
+ are often heavily used in programming for configuration purposes, it is
+ ill-advised to use them in data analysis because they require additional
+ instructions for users to set up, and humans can simply forget to do this.
+ If there are any options to set up, do it inside the source document.
+\end_layout
+
+\begin_layout Itemize
+Attach 
+\emph on
+sessionInfo()
+\emph default
+ and instructions on how to compile this document: the session information
+ makes a reader aware of the software environment, such as the version of
+ R, the operating system and add-on packages used.
+ Sometimes it is not as simple as calling one single function to compile
+ a document, and we have to make it clear how to compile it if additional
+ steps are required; but it is better to provide the instructions in the
+ form of a computer script, e.g., a shell script, a Makefile, or a batch file.
+\end_layout
+
+\begin_layout Standard
+These practices are not necessarily restricted to the R language, although
+ we used R for examples.
+ The same rules also apply to other computing environments.
+\end_layout
+
+\begin_layout Standard
+Note that literate programming tools often require users to compile the
+ documents in batch mode, and it is good for reproducible research, but
+ the batch mode can be cumbersome for exploratory data analysis.
+ When we have not decided what to put in the final document, we may need
+ to interact with the data and code frequently, and it is not worth compiling
+ the whole document each time we update the code.
+ This problem can be solved by a capable editor such as RStudio and Emacs/ESS,
+ which are introduced in Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:editors"
+
+\end_inset
+
+.
+ In these editors, we can interact with the code and explore the data freely
+ (e.g., send or write R code in an associated R session), and once we finish
+ the coding work, we can compile the whole document in the batch mode to
+ make sure all the code works in a clean R session.
+\end_layout
+
+\begin_layout Section
+Barriers
+\end_layout
+
+\begin_layout Standard
+Despite all the advantages of RR, there are some practical barriers, and
+ here is a non-exhaustive list:
+\end_layout
+
+\begin_layout Itemize
+the data can be huge: for example, it is common that high energy physics
+ and next-generation sequencing data in biology can produce tens of terabytes
+ of data, and it is not trivial to archive the data with the reports and
+ distribute them
+\end_layout
+
+\begin_layout Itemize
+confidentiality of data: it may be prohibited to release the raw data with
+ the report, especially when it is involved with human subjects due to the
+ confidentiality issues
+\end_layout
+
+\begin_layout Itemize
+software version and configuration: a report may be generated with an old
+ version of a software package that is no longer available, or with a software
+ package that compiles differently on different operating systems
+\end_layout
+
+\begin_layout Itemize
+competition: one may choose not release the code or data with the report
+ due to the fact that potential competitors can easily get everything for
+ free, whereas the original authors have invested a large amount of money
+ and effort
+\end_layout
+
+\begin_layout Standard
+We certainly should not expect all reports in the world to be publicly available
+ and strictly reproducible, but it is better to share even mediocre or flawed
+ code or problematic datasets than not to share anything at all.
+ Instead of persuading people into RR by policies, we may try to create
+ tools that make RR easier than cut-and-paste, and 
+\series bold
+knitr
+\series default
+ is such an attempt.
+ The success of RPubs
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+RPubs
+\end_layout
+
+\end_inset
+
+ (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://rpubs.com
+\end_layout
+
+\end_inset
+
+) is evidence that an easy tool can quickly promote RR, because users enjoy
+ using it.
+ Readers can find hundreds of reports contributed by users in the above
+ Web site.
+ It is fairly common to see student homework and exercises there, and once
+ the students are trained in this manner, we may expect more reproducible
+ scientific research in the future.
+\end_layout
+
+\begin_layout Chapter
+A First Look
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:first"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\series bold
+knitr
+\series default
+ package is a general-purpose literate programming engine --- it supports
+ document formats including LaTeX, HTML, and Markdown (see Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:formats"
+
+\end_inset
+
+), and programming languages such as R, Python, awk, C++, and shell scripts
+ (Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:engines"
+
+\end_inset
+
+).
+ Before we get started, we need to install 
+\series bold
+knitr
+\series default
+ in R.
+ Then we will introduce the basic concepts with minimal examples.
+ Finally, we will show how to generate reports quickly from pure R scripts,
+ which can be useful for beginners who do not know anything about dynamic
+ documents.
+\end_layout
+
+\begin_layout Section
+Setup
+\end_layout
+
+\begin_layout Standard
+Since 
+\series bold
+knitr
+\series default
+ is an R package, it can be installed from CRAN in the usual way in R:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<install-knitr, eval=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+install.packages('knitr', dependencies=TRUE)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note here that 
+\family typewriter
+dependencies = TRUE
+\family default
+ is optional, and will install all packages that are not absolutely necessary
+ but can enhance this package with some useful features.
+ The development version is hosted on Github
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Github
+\end_layout
+
+\end_inset
+
+: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://github.com/yihui/knitr
+\end_layout
+
+\end_inset
+
+, and you can always check out the latest development version, which may
+ not be stable but contains the latest bug fixes and new features.
+ If you have any problems with 
+\series bold
+knitr
+\series default
+, the first thing to check is its version:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<knitr-version, eval=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+packageVersion('knitr')
+\end_layout
+
+\begin_layout Plain Layout
+
+# if not the latest version, run
+\end_layout
+
+\begin_layout Plain Layout
+
+update.packages()
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If you choose LaTeX as the typesetting tool, you may need to install MiKTeX
+ (Windows, 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://miktex.org/
+\end_layout
+
+\end_inset
+
+), MacTeX (Mac OS, 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://tug.org/mactex/
+\end_layout
+
+\end_inset
+
+) or TeXLive (Linux, 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://tug.org/texlive/
+\end_layout
+
+\end_inset
+
+).
+ If you are going to work with HTML or Markdown, nothing else needs to be
+ installed, since the output will be Web pages, which you can view with
+ a Web browser.
+\end_layout
+
+\begin_layout Standard
+Once we have 
+\series bold
+knitr
+\series default
+ installed, we can compile source documents using the function 
+\emph on
+knit()
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+knit()
+\end_layout
+
+\end_inset
+
+
+\emph default
+, e.g.,
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<knitr-usage, eval=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+library(knitr)
+\end_layout
+
+\begin_layout Plain Layout
+
+knit('your-file.Rnw')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A 
+\family sans
+*.Rnw
+\family default
+ file is usually a LaTeX document with R code embedded in it, as we will
+ see in the following section and Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:formats"
+
+\end_inset
+
+, in which more types of documents will be introduced.
+\end_layout
+
+\begin_layout Section
+Minimal Examples
+\end_layout
+
+\begin_layout Standard
+We use two minimal examples written in LaTeX and Markdown, respectively,
+ to illustrate the structure of dynamic documents.
+ We do not discuss the syntax of LaTeX or Markdown for the time being (see
+ Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:formats"
+
+\end_inset
+
+ instead).
+ For the sake of simplicity, the 
+\family typewriter
+cars
+\family default
+ dataset in base R is used to build a simple linear regression model.
+ Type 
+\family typewriter
+?cars
+\family default
+ in R to see detailed documentation.
+ Basically it has two variables, speed and distance:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<str-cars>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+str(cars)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+An Example in LaTeX
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:minimal-rnw"
+
+\end_inset
+
+ is a full example of R code embedded in LaTeX
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+LaTeX
+\end_layout
+
+\end_inset
+
+; we call this kind of documents 
+\emph on
+Rnw documents
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\emph off
+Rnw document
+\end_layout
+
+\end_inset
+
+
+\emph default
+ hereafter because their filename extension is Rnw by convention.
+ If we save it as a file 
+\family sans
+minimal.Rnw
+\family default
+ and run 
+\family typewriter
+knit('minimal.Rnw')
+\family default
+ in R as described before, 
+\series bold
+knitr
+\series default
+ will generate a LaTeX output document named 
+\family sans
+minimal.tex
+\family default
+.
+ For those who are familiar with LaTeX, you can compile this document to
+ PDF via 
+\family typewriter
+pdflatex
+\family default
+.
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:minimal-latex"
+
+\end_inset
+
+ is the PDF document compiled from the Rnw document.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 1
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset include
+LatexCommand verbatiminput
+filename "knitr-examples/048-cars-demo.Rnw"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+The source of a minimal Rnw document
+\end_layout
+
+\end_inset
+
+The source of a minimal Rnw document: see output in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:minimal-latex"
+
+\end_inset
+
+.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:minimal-rnw"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 1
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename knitr-examples/048-cars-demo.pdf
+	width 100line%
+	BoundingBox 1.7in 2.8500000000000001in 6.7000000000000002in 8.75in
+	clip
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+A minimal example in LaTeX
+\end_layout
+
+\end_inset
+
+A minimal example in LaTeX with an R code chunk, a plot, and numeric output
+ (regression coefficient).
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:minimal-latex"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+What is essential here is how we embedded R code in LaTeX.
+ In an Rnw document, 
+\family typewriter
+<<>>=
+\family default
+ marks the beginning of code chunks
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+code chunks
+\end_layout
+
+\end_inset
+
+, and 
+\family typewriter
+@
+\family default
+ terminates a code chunk (this description is not rigorous but is often
+ easier to understand); we have four lines of R code between the two markers
+ in this example to draw a scatterplot, fit a linear model, and add a regression
+ line to the scatterplot.
+ The command 
+\family typewriter
+
+\backslash
+Sexpr{}
+\family default
+ is used to embed inline R code
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+inline R code
+\end_layout
+
+\end_inset
+
+, e.g., 
+\family typewriter
+coef(fit)[2]
+\family default
+ in this example.
+ We can write chunk options
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+chunk options
+\end_layout
+
+\end_inset
+
+ for a code chunk between 
+\family typewriter
+<<
+\family default
+ and 
+\family typewriter
+>>=
+\family default
+; the chunk options in this example specified the plot size to be 4 by 3
+ inches (
+\family typewriter
+fig.width
+\family default
+ and 
+\family typewriter
+fig.height
+\family default
+), and plots should be aligned in the center (
+\family typewriter
+fig.align
+\family default
+).
+\end_layout
+
+\begin_layout Standard
+In this minimal example, we have most basic elements of a report:
+\end_layout
+
+\begin_layout Enumerate
+title, author, and date
+\end_layout
+
+\begin_layout Enumerate
+model description
+\end_layout
+
+\begin_layout Enumerate
+data and computation
+\end_layout
+
+\begin_layout Enumerate
+graphics
+\end_layout
+
+\begin_layout Enumerate
+numeric results
+\end_layout
+
+\begin_layout Standard
+All the output is generated dynamically from R.
+ Even if the data has changed, we do not need to redo the report from the
+ ground up, and the output will be updated accordingly if we update the
+ data and recompile the report.
+\end_layout
+
+\begin_layout Subsection
+An Example in Markdown
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:minimal-markdown"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+LaTeX may look overwhelming to beginners due to the large number of commands.
+ By comparison, Markdown
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Markdown
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "markdown"
+
+\end_inset
+
+ is a much simpler format.
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:minimal-rmd"
+
+\end_inset
+
+ is a Markdown example doing the same analysis with the previous example:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 1
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset include
+LatexCommand verbatiminput
+filename "knitr-examples/049-cars-demo.Rmd"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+The source of a minimal Rmd document
+\end_layout
+
+\end_inset
+
+The source of a minimal Rmd document: see output in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:minimal-markdown"
+
+\end_inset
+
+.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:minimal-rmd"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The ideal output from Markdown is an HTML
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+HTML
+\end_layout
+
+\end_inset
+
+ Web page, as shown in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:minimal-markdown"
+
+\end_inset
+
+ (in Mozilla Firefox).
+ Similarly, we can see the syntax for R code in a Markdown document: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+verb|```{r}|
+\end_layout
+
+\end_inset
+
+ opens a code chunk, 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+verb|```|
+\end_layout
+
+\end_inset
+
+ terminates a chunk, and inline R code can be put inside 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+verb|`r `|
+\end_layout
+
+\end_inset
+
+, where 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+verb|`|
+\end_layout
+
+\end_inset
+
+ is a backtick.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figure-shot/minimal-browser.png
+	special interpolate,width=\maxwidth
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+A minimal example in Markdown
+\end_layout
+
+\end_inset
+
+A minimal example in Markdown with the same analysis as in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:minimal-latex"
+
+\end_inset
+
+, but the output is HTML instead of PDF now.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:minimal-markdown"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A slightly longer example in 
+\series bold
+knitr
+\series default
+ is a demo named 
+\family typewriter
+notebook
+\family default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+notebook
+\end_layout
+
+\end_inset
+
+, which is based on Markdown.
+ It shows not only the potential power of Markdown, but also the possibility
+ of building Web applications with 
+\series bold
+knitr
+\series default
+.
+ To watch the demo, run the code below:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<demo-notebook, eval=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+if (!require('shiny')) install.packages('shiny')
+\end_layout
+
+\begin_layout Plain Layout
+
+demo('notebook', package = 'knitr')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Your default Web browser will be launched to show a Web notebook.
+ The source code is in the left panel, and the live results are in the right
+ panel.
+ You are free to experiment with the source code and re-compile the notebook.
+\end_layout
+
+\begin_layout Section
+Quick Reporting
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:stitch"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If a user only has basic knowledge of R but knows nothing about 
+\series bold
+knitr
+\series default
+, or one does not want to write anything other than an R script, it is also
+ possible to generate a quick report from this R script using the 
+\emph on
+stitch()
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+stitch()
+\end_layout
+
+\end_inset
+
+
+\emph default
+ function.
+\end_layout
+
+\begin_layout Standard
+The basic idea of 
+\emph on
+stitch()
+\emph default
+ is that 
+\series bold
+knitr
+\series default
+ provides a template of the source document with some default settings,
+ so that the user only needs to feed this template with an R script (as
+ one code chunk); then 
+\series bold
+knitr
+\series default
+ will compile the template to a report.
+ Currently it has built-in templates for LaTeX, HTML, and Markdown.
+ The usage is like this:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<stitch-usage, eval=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+library(knitr)
+\end_layout
+
+\begin_layout Plain Layout
+
+stitch('your-script.R')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Extracting R Code
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:purl-brief"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For a literate programming document, we can either compile it to a report
+ (run the code), or extract the program code in it.
+ They are called 
+\begin_inset Quotes eld
+\end_inset
+
+weaving
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+weave
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+tangling
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+tangle
+\end_layout
+
+\end_inset
+
+,
+\begin_inset Quotes erd
+\end_inset
+
+ respectively.
+ Apparently the function 
+\emph on
+knit()
+\emph default
+ is for weaving, and the corresponding tangling function is 
+\emph on
+purl()
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+purl()
+\end_layout
+
+\end_inset
+
+
+\emph default
+ in 
+\series bold
+knitr
+\series default
+.
+ For example,
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<purl-usage, eval=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+library(knitr)
+\end_layout
+
+\begin_layout Plain Layout
+
+purl('your-file.Rnw')
+\end_layout
+
+\begin_layout Plain Layout
+
+purl('your-file.Rmd')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The result of tangling is an R script; in the above examples, the default
+ output will be 
+\family sans
+your-file.R
+\family default
+, which consists of all code chunks in the source document.
+\end_layout
+
+\begin_layout Standard
+So far we have been introducing the command line usage of 
+\series bold
+knitr
+\series default
+, and it is often tedious to type the commands repeatedly.
+ In the next chapter, we show how a decent editor can help edit and compile
+ the source document with one single mouse click or a keyboard shortcut.
+\end_layout
+
+\begin_layout Chapter
+Editors
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:editors"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+RStudio
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:rstudio"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+LyX
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:lyx"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Emacs/ESS
+\end_layout
+
+\begin_layout Section
+Other Editors
+\end_layout
+
+\begin_layout Chapter
+Document Formats
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:formats"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Input Syntax
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:input-syntax"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Chunk Options
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:chunk-options"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Chunk Label
+\end_layout
+
+\begin_layout Subsection
+Global Options
+\end_layout
+
+\begin_layout Subsection
+Chunk Syntax
+\end_layout
+
+\begin_layout Section
+Document Formats
+\end_layout
+
+\begin_layout Subsection
+Markdown
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:syntax-markdown"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+LaTeX
+\end_layout
+
+\begin_layout Subsection
+HTML
+\end_layout
+
+\begin_layout Subsection
+reStructuredText
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:reStructuredText"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Customization
+\end_layout
+
+\begin_layout Section
+Output Renderers
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:output-renderers"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+R Scripts
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:r-scripts"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chapter
+Text Output
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:text"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Inline Output
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:inline-output"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Chunk Output
+\end_layout
+
+\begin_layout Subsection
+Chunk Evaluation
+\end_layout
+
+\begin_layout Subsection
+Code Formatting
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:code-formatting"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Code Decoration
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:code-decoration"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Show/Hide Output
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:hide-output"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Tables
+\end_layout
+
+\begin_layout Section
+Themes
+\end_layout
+
+\begin_layout Chapter
+Graphics
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:graphics"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Graphical Devices
+\end_layout
+
+\begin_layout Subsection
+Custom Device
+\end_layout
+
+\begin_layout Subsection
+Choose a Device
+\end_layout
+
+\begin_layout Subsection
+Device Size
+\end_layout
+
+\begin_layout Subsection
+More Device Options
+\end_layout
+
+\begin_layout Subsection
+Encoding
+\end_layout
+
+\begin_layout Subsection
+The Dingbats Font
+\end_layout
+
+\begin_layout Section
+Plot Recording
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:plot-recording"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Plot Rearrangement
+\end_layout
+
+\begin_layout Subsection
+Animation
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:animation"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Alignment
+\end_layout
+
+\begin_layout Section
+Plot Size in Output
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:plot-size"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Extra Output Options
+\end_layout
+
+\begin_layout Section
+The tikz Device
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:tikz-device"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Figure Environment
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Section
+Figure Path
+\end_layout
+
+\begin_layout Chapter
+Cache
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:cache"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Implementation
+\end_layout
+
+\begin_layout Section
+Write Cache
+\end_layout
+
+\begin_layout Section
+When to Update Cache
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:cache-update"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Side Effects
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:side-effects"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Chunk Dependencies
+\end_layout
+
+\begin_layout Subsection
+Manual Dependency
+\end_layout
+
+\begin_layout Subsection
+Automatic Dependency
+\end_layout
+
+\begin_layout Chapter
+Cross Reference
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:reference"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Chunk Reference
+\end_layout
+
+\begin_layout Subsection
+Embed Code Chunks
+\end_layout
+
+\begin_layout Subsection
+Reuse Whole Chunks
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:reuse-whole-chunks"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Code Externalization
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:code-externalization"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Labeled Chunks
+\end_layout
+
+\begin_layout Subsection
+Line-based Chunks
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:read-chunk"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Child Documents
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:child-documents"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Input Child Documents
+\end_layout
+
+\begin_layout Subsection
+Child Documents as Templates
+\end_layout
+
+\begin_layout Subsection
+Standalone Mode
+\end_layout
+
+\begin_layout Chapter
+Hooks
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:hooks"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Chunk Hooks
+\end_layout
+
+\begin_layout Subsection
+Create Chunk Hooks
+\end_layout
+
+\begin_layout Subsection
+Trigger Chunk Hooks
+\end_layout
+
+\begin_layout Subsection
+Hook Arguments
+\end_layout
+
+\begin_layout Subsection
+Hooks and Chunk Options
+\end_layout
+
+\begin_layout Subsection
+Write Output
+\end_layout
+
+\begin_layout Section
+Examples
+\end_layout
+
+\begin_layout Subsection
+Crop Plots
+\end_layout
+
+\begin_layout Subsection
+rgl Plots
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:rgl-plots"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Manually Save Plots
+\end_layout
+
+\begin_layout Subsection
+Optimize PNG Plots
+\end_layout
+
+\begin_layout Subsection
+Close an rgl Device
+\end_layout
+
+\begin_layout Subsection
+WebGL
+\end_layout
+
+\begin_layout Chapter
+Language Engines
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:engines"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Design
+\end_layout
+
+\begin_layout Subsection
+The Engine Function
+\end_layout
+
+\begin_layout Subsection
+Engine Options
+\end_layout
+
+\begin_layout Section
+Languages and Tools
+\end_layout
+
+\begin_layout Subsection
+C++
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:C++"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Interpreted Languages
+\end_layout
+
+\begin_layout Subsection
+TikZ
+\end_layout
+
+\begin_layout Subsection
+Graphviz
+\end_layout
+
+\begin_layout Subsection
+Highlight
+\end_layout
+
+\begin_layout Chapter
+Tricks and Solutions
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:tricks"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Chunk Options
+\end_layout
+
+\begin_layout Subsection
+Option Aliases
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:option-aliases"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Option Templates
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:option-templates"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Program Chunk Options
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:program-chunk-opts"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Code in Appendix
+\end_layout
+
+\begin_layout Section
+Package Options
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:package-options"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Typesetting
+\end_layout
+
+\begin_layout Subsection
+Output Width
+\end_layout
+
+\begin_layout Subsection
+Message Colors
+\end_layout
+
+\begin_layout Subsection
+Box Padding
+\end_layout
+
+\begin_layout Subsection
+Beamer
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:beamer"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Suppress Long Output
+\end_layout
+
+\begin_layout Subsection
+Escape Special Characters
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:escape-chars"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+The Example Environment
+\end_layout
+
+\begin_layout Section
+Utilities
+\end_layout
+
+\begin_layout Subsection
+R Package Citation
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:write-bib"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Image URI
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:image-uri"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Upload Images
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:imgur-upload"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Compile Documents
+\end_layout
+
+\begin_layout Subsection
+Construct Code Chunks
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:construct-chunks"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Extract Source Code
+\end_layout
+
+\begin_layout Subsection
+Reproducible Simulation
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:rand-seed"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+R Documentation
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:r-documentation"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Rst2pdf
+\end_layout
+
+\begin_layout Subsection
+Package Demos
+\end_layout
+
+\begin_layout Subsection
+Pretty Printing
+\end_layout
+
+\begin_layout Subsection
+A Macro Preprocessor
+\end_layout
+
+\begin_layout Section
+Debugging
+\end_layout
+
+\begin_layout Section
+Multilingual Support
+\end_layout
+
+\begin_layout Chapter
+Publishing Reports
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:publish"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+RStudio
+\end_layout
+
+\begin_layout Section
+Pandoc
+\end_layout
+
+\begin_layout Section
+HTML5 Slides
+\end_layout
+
+\begin_layout Section
+Jekyll
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:jekyll"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+WordPress
+\end_layout
+
+\begin_layout Chapter
+Applications
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:applications"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Homework
+\end_layout
+
+\begin_layout Section
+Web Site and Blogging
+\end_layout
+
+\begin_layout Subsection
+Vistat and Rcpp Gallery
+\end_layout
+
+\begin_layout Subsection
+UCLA R Tutorial
+\end_layout
+
+\begin_layout Subsection
+The cda and RHadoop Wiki
+\end_layout
+
+\begin_layout Subsection
+The ggbio Package
+\end_layout
+
+\begin_layout Subsection
+Geospatial Data in R and Beyond
+\end_layout
+
+\begin_layout Section
+Package Vignettes
+\end_layout
+
+\begin_layout Subsection
+PDF Vignette
+\end_layout
+
+\begin_layout Subsection
+HTML Vignette
+\end_layout
+
+\begin_layout Section
+Books
+\end_layout
+
+\begin_layout Subsection
+This Book
+\end_layout
+
+\begin_layout Subsection
+The Analysis of Data
+\end_layout
+
+\begin_layout Subsection
+The Statistical Sleuth in R
+\end_layout
+
+\begin_layout Chapter
+Other Tools
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:other"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Sweave
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:sweave"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Syntax
+\end_layout
+
+\begin_layout Subsection
+Options
+\end_layout
+
+\begin_layout Subsection
+Problems
+\end_layout
+
+\begin_layout Section
+Other R Packages
+\end_layout
+
+\begin_layout Section
+Python Packages
+\end_layout
+
+\begin_layout Subsection
+Dexy
+\end_layout
+
+\begin_layout Subsection
+PythonTeX
+\end_layout
+
+\begin_layout Subsection
+IPython
+\end_layout
+
+\begin_layout Section
+More Tools
+\end_layout
+
+\begin_layout Subsection
+Org-mode
+\end_layout
+
+\begin_layout Subsection
+SASweave
+\end_layout
+
+\begin_layout Subsection
+Office
+\end_layout
+
+\begin_layout Chapter
+\start_of_appendix
+Internals
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:internals"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Documentation
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:knitr-documentation"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Closures
+\end_layout
+
+\begin_layout Section
+Implementation
+\end_layout
+
+\begin_layout Subsection
+Parser
+\end_layout
+
+\begin_layout Subsection
+Chunk Hooks
+\end_layout
+
+\begin_layout Subsection
+Option Aliases
+\end_layout
+
+\begin_layout Subsection
+Cache
+\end_layout
+
+\begin_layout Subsection
+Compatibility with Sweave
+\end_layout
+
+\begin_layout Subsection
+Concordance
+\end_layout
+
+\begin_layout Section
+Syntax
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<write-bib, include=FALSE, bib=file.info('cache-book/__packages')[,'size']>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+write_bib(c(readLines('cache-book/__packages'), 'tikzDevice', 'xtable',
+ 'rgl', 'markdown', 'evaluate', 'formatR', 'R2SWF', 'rggobi', 'Rcpp', 'slidify',
+ 'brew', 'R2HTML', 'corrplot', 'roxygen2', 'Hmisc', 'highr'),
+\end_layout
+
+\begin_layout Plain Layout
+
+'DDR-packages.bib')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage cleardoublepage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "DDR-Yihui-Xie,DDR-packages"
+options "bibtotoc,apalike"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset index_print
+LatexCommand printindex
+type "idx"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

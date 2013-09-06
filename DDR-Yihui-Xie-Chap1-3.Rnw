@@ -1,0 +1,1448 @@
+%% LyX 2.0.6 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass{krantz}
+\usepackage{mathpazo}
+\renewcommand{\sfdefault}{lmss}
+\renewcommand{\ttdefault}{lmtt}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{verbatim}
+\usepackage{calc}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{makeidx}
+\makeindex
+\usepackage{graphicx}
+\usepackage[authoryear]{natbib}
+\usepackage[unicode=true,pdfusetitle,
+ bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=3,
+ breaklinks=true,pdfborder={0 0 1},backref=false,colorlinks=false]
+ {hyperref}
+\usepackage{breakurl}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\providecommand{\LyX}{\texorpdfstring%
+  {L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
+  {LyX}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\topfraction}{0.8}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\floatpagefraction}{0.75}
+
+% for andre simon's highlight
+\let\hlslc\hlcom \let\hlppc\hlcom
+\let\hlesc\hlstd \let\hlpps\hlstd \let\hllin\hlstd
+
+\usepackage{emptypage}
+
+\makeatother
+
+\begin{document}
+
+<<setup, include=FALSE>>=
+library(knitr)
+options(width=55, replace.assign=TRUE)
+opts_chunk$set(cache=TRUE, dev='tikz', fig.path='figure-book/', cache.path='cache-book/', fig.width=5, fig.height=5,
+               fig.align='center', error=FALSE)
+
+knit_hooks$set(par = function(before, options, envir) {
+    if (before && options$fig.show != "none") {
+        par(mar = c(4, 4, 0.1, 0.1), cex.lab = 0.95, cex.axis = 0.9, mgp = c(2, 0.7, 
+            0), tcl = -0.3, las = 1)
+        if (is.list(options$par)) 
+            do.call(par, options$par)
+    }
+}, document = function(x) {
+  x = gsub('(\\\\begin\\{tabular\\})', '\\\\medskip{}\n\\1', hook_movecode(x))
+  gsub('\\\\end\\{alltt\\}\n*\\\\begin\\{alltt\\}\n', '', x)
+})
+@
+
+
+\title{Dynamic Documents with R and knitr}
+
+
+\author{Yihui Xie}
+
+\maketitle
+\pagenumbering{gobble}
+
+
+\chapter*{Note}
+
+\pagenumbering{roman}
+
+\thispagestyle{empty}~
+
+This PDF document only contains the first three chapters, released
+with permission of Chapman \& Hall. The complete book is available
+on Amazon (\url{http://www.amazon.com/gp/product/1482203537}).
+
+For those who are interested in writing a book with Chapman \& Hall,
+the \LyX{} and Rnw source files are freely available in the repository
+\url{https://github.com/yihui/knitr-book}. Hopefully this template
+can help beginners eliminate 90\% of the possible \LaTeX{} problems,
+e.g.,
+\begin{itemize}
+\item make odd-numbered pages recto, and even-numbered pages verso
+\item leave a desired number of blank pages (note that eventually you should
+remove this page, since this page is here only for trim marks to be
+correctly generated on blank pages)
+\item different page numbering styles
+\item correct order of the items in the table of contents
+\item blank pages after each chapter
+\item ...
+\end{itemize}
+\newpage{}
+
+\thispagestyle{empty}~
+
+\newpage{}
+
+\thispagestyle{empty}~
+
+\newpage{}
+
+\thispagestyle{empty}~
+
+\newpage{}
+
+\thispagestyle{empty}~
+
+\newpage{}
+
+\thispagestyle{empty}~
+
+\newpage{}
+
+\thispagestyle{empty}
+
+\begin{center}
+{\Large{To my parents\bigskip{}
+}}\\
+{\Large{Shaobai Xie }}\emph{\Large{and}}{\Large{ Guolan Xie}}
+\par\end{center}{\Large \par}
+
+\newpage{}
+
+\tableofcontents{}
+
+
+\chapter*{Preface}
+
+\addcontentsline{toc}{chapter}{Preface}We import a dataset into a
+statistical software package, run a procedure to get all results,
+then copy and paste selected pieces into a typesetting program, add
+a few descriptions, and finish a report. This is a common practice
+of writing statistical reports. There are obvious dangers and disadvantages
+in this process:
+\begin{enumerate}
+\item it is error-prone due to too much manual work;
+\item it requires lots of human effort to do tedious jobs such as copying
+results across documents;
+\item the workflow is barely recordable especially when it involves GUI
+(Graphical User Interface) operations, therefore it is difficult to
+reproduce;
+\item a tiny change of the data source in the future will require the author(s)
+to go through the same procedure again, which can take nearly the
+same amount of time and effort;
+\item the analysis and writing are separate, so close attention has to be
+paid to the synchronization of the two parts.
+\end{enumerate}
+In fact, a report can be generated dynamically from program code.
+Just like a software package has its source code, a dynamic document
+is the source code of a report. It is a combination of computer code
+and the corresponding narratives. When we compile the dynamic document,
+the program code in it is executed and replaced with the output; we
+get a final report by mixing the code output with the narratives.
+Because we only manage the source code, we are free of all the possible
+problems above. For example, we can change a single parameter in the
+source code, and get a different report on the fly.
+
+In this book, \emph{dynamic documents} refer to the kind of source
+documents containing both program code and narratives. Sometimes we
+may just call them \emph{source documents} since ``dynamic'' may
+sound confusing and ambiguous to some people (it does not mean interactivity
+or animations). We also use the term \emph{report} frequently throughout
+the book, which really means the output document compiled from a dynamic
+document.
+
+
+\section*{Who Should Read This Book}
+
+This book is written for both beginners and advanced users. The main
+goal is to make writing reports easier: the ``report'' here can
+range from student homework or project reports, exams, books, blogs,
+and web pages to virtually any documents related to statistical graphics,
+computing, and data analysis.
+
+For beginners, Chapter \ref{chap:intro} to \ref{chap:cache} should
+be enough for basic applications (which have already covered many
+features); for power users, Chapter \ref{chap:reference} to \ref{chap:engines}
+can be helpful for understanding the extensibility of the \textbf{knitr}
+package.
+
+Familiarity with \LaTeX{} and HTML can be helpful, but is not required
+at all; once we get the basic idea, we can write reports in simple
+languages such as Markdown. Unless otherwise noted, all features apply
+to all document formats, although we primarily use \LaTeX{} for examples.
+
+We recommend the readers to take a look at the Web site RPubs (\url{http://rpubs.com}),
+which contains a large number of user-contributed documents. Hopefully
+they are convincing enough to show it is quick and easy to write dynamic
+documents.
+
+
+\section*{Software Information and Conventions}
+
+The main tools we introduce in this book are the R language \citep{R-base}
+and the \textbf{knitr} package \citep{R-knitr}, with which this book
+was written, but the language in the documents is not restricted to
+R; for example, we can also integrate Python, awk, and shell scripts,
+etc., into the reports. For document formats, we mainly use \LaTeX{},
+HTML, and Markdown.
+
+Both R and \textbf{knitr} are available on CRAN (Comprehensive R Archive
+Network) as free and open-source software: \url{http://cran.r-project.org}.
+Their version information for this book can be found in the session
+information:
+
+<<session-info, cache=FALSE, tidy.opts=list(replace.assign=FALSE)>>=
+print(sessionInfo(), locale=FALSE)
+@
+
+The \textbf{knitr} package is documented on the Web site \url{http://yihui.name/knitr/},
+and the most important page is perhaps \url{http://yihui.name/knitr/options},
+where we can find the complete reference for chunk options (Section
+\ref{sub:chunk-options}). The development version is hosted on Github:
+\url{https://github.com/yihui/knitr}; you can always check out the
+latest development version, file issues/feature requests, or even
+participate in the development by forking the repository and making
+changes by yourself. There are plenty of examples in the repository
+\url{https://github.com/yihui/knitr-examples}, including both minimal
+and advanced examples. There is also a wiki page maintained by Frank
+Harrell \emph{et al.} from the Department of Biostatistics, Vanderbilt
+University, which introduced several tricks and useful experience
+of using \textbf{knitr}: \url{http://biostat.mc.vanderbilt.edu}.
+
+Unlike many other books on R, we do not add prompts to R source code
+in this book, and we comment out the text output by two hashes \texttt{\#\#}
+by default, as you can see above. The reason for this convention is
+explained in Chapter \ref{chap:text}. Package names are in bold text
+(e.g., \textbf{rpart}), function names in italic (e.g., \emph{paste()}),
+inline code is formatted in a typewriter font (e.g., \texttt{mean(1:10,
+trim = 0.1)}), and filenames are in sans serif fonts (e.g., \textsf{figure/foo.pdf}).
+
+
+\section*{Structure of the Book}
+
+Chapter \ref{chap:intro} is an overview of dynamic documents, introducing
+the idea of literate programming; Chapter \ref{chap:rr} explains
+why dynamic documents are important to scientific research from the
+viewpoint of reproducible research; Chapter \ref{chap:first} gives
+a first complete example that covers basic concepts and what we can
+do with \textbf{knitr}; Chapter \ref{chap:editors} introduces a few
+common text editors that support \textbf{knitr}, so that it is easier
+to compile reports from source documents; and Chapter \ref{chap:formats}
+describes the syntax for different document formats such as \LaTeX{},
+HTML, and Markdown.
+
+Chapter \ref{chap:text} to \ref{chap:engines} explain the core functionality
+of the package. Chapter \ref{chap:text} and \ref{chap:graphics}
+present how to control text and graphics output from \textbf{knitr},
+respectively; Chapter \ref{chap:cache} talks about the caching mechanism
+that may significantly reduce the computation time; Chapter \ref{chap:reference}
+shows how to reuse source code by chunk references and organize child
+documents; Chapter \ref{chap:hooks} consists of an advanced topic
+--- chunk hooks, which make a literate programming document really
+programmable and extensible; and Chapter \ref{chap:engines} illustrates
+how to integrate other languages, such as Python and awk, etc. into
+one report in the \textbf{knitr} framework.
+
+Chapter \ref{chap:tricks} introduces some useful tricks that make
+it easier to write documents with \textbf{knitr}; Chapter \ref{chap:publish}
+shows how to publish reports in a variety of formats including PDF,
+HTML, and HTML5 slides; Chapter \ref{chap:applications} covers a
+few significant applications; and Chapter \ref{chap:other} introduces
+other tools for dynamic report generation, such as Sweave, other R
+packages, and software in other languages. Appendix \ref{chap:internals}
+is a guide to some internal structures of \textbf{knitr}, which may
+be helpful to other package developers.
+
+The topics from Chapter \ref{chap:text} to \ref{chap:engines} are
+parallel to each other. For example, if you want to know more about
+graphics output, you can skip Chapter \ref{chap:text} and jump to
+Chapter \ref{chap:graphics} directly.
+
+In all, we will show how to improve our efficiency in writing reports,
+fine tune every aspect of a report, and go from program output to
+publication quality reports.
+
+
+\section*{Acknowledgments}
+
+First, I want to thank my wireless router, which was broken when I
+started writing the core chapters of this book (in the boring winter
+of Ames). Besides, I also thank my wife for not giving me the Ethernet
+cable during that period.
+
+This book would certainly not have been possible without the powerful
+R language, for which I thank the R core team and its contributors.
+The seminal work of Sweave (by Friedrich Leisch and R-core) is the
+most important source of inspiration of \textbf{knitr}. Some additional
+features were inspired by other R packages including \textbf{cacheSweave}
+(Roger Peng), \textbf{pgfSweave} (Cameron Bracken and Charlie Sharpsteen),
+\textbf{weaver} (Seth Falcon), \textbf{SweaveListingUtils} (Peter
+Ruckdeschel), \textbf{highlight} (Romain Francois), and \textbf{brew}
+(Jeffrey Horner). The initial design was based on Hadley Wickham's
+\textbf{decumar} package, and the evaluator is based on his \textbf{evaluate}
+package. Both \LyX{} and RStudio quickly included support to \textbf{knitr}
+after it came out, which made it a lot easier to write source documents,
+and I'd like to thank their developers (especially Jean-Marc Lasgouttes,
+JJ Allaire, and Joe Cheng); similarly I thank the developers of other
+editors such as Emacs/ESS.
+
+The R/\textbf{knitr} user community is truly amazing. There has been
+a lot of feedback since the beginning of its development in late 2011.
+I still remember some users shouted it from the rooftops when I released
+the first beta version. I appreciate this kind of excitement. Hundreds
+of questions and comments in the mailing list (\url{https://groups.google.com/group/knitr})
+and on StackOverflow (\url{http://stackoverflow.com/questions/tagged/knitr})
+made this package far more powerful than I imagined. The development
+repository is on Github, where I have received nearly 500 issues and
+more than 50 pull requests (patches) from several contributors (\url{https://github.com/yihui/knitr/pulls}),
+including Ramnath Vaidyanathan, Taiyun Wei, and J.J. Allaire.
+
+<<knitr-contributors, eval=FALSE>>=
+# to see a full list of contributors
+packageDescription('knitr', fields='Authors@R')
+@
+
+I thank my PhD advisors at Iowa State University, Di Cook and Heike
+Hofmann, for their open-mindedness and consistent support for my research
+in this ``non-classical'' area of statistics.
+
+Lastly I thank the reviewers Frank Harrell, Douglas Bates, Carl Boettiger,
+Joshua Wiley, and Scott Kostyshak for their valuable advice on improving
+the quality of this book (which is the first book of my career), and
+I'm grateful to the editor John Kimmel, without whom I would not have
+been able to publish my first book quickly.
+
+\begin{flushright}
+Yihui Xie\\
+Ames, IA
+\par\end{flushright}
+
+
+\chapter*{Author}
+
+\addcontentsline{toc}{chapter}{Author}Yihui Xie (\url{http://yihui.name})
+is a PhD student in the Department of Statistics, Iowa State University.
+His research interests include interactive statistical graphics and
+statistical computing. He is an active R user and the author of several
+R packages, such as \textbf{animation}, \textbf{formatR}, \textbf{Rd2roxygen},
+and \textbf{knitr}, among which the \textbf{animation} package won
+the 2009 John M. Chambers Statistical Software Award (ASA), and the
+\textbf{knitr} package was awarded the ``Honorable Mention'' prize
+in the ``Applications of R in Business Contest 2012'' thanks to
+Revolution Analytics.
+
+In 2006 he founded the ``Capital of Statistics'' (\url{http://cos.name}),
+which has grown into a large online community on statistics in China.
+He initiated the first Chinese R conference in 2008 and has been organizing
+R conferences in China since then. During his PhD training at the
+Iowa State University, he won the Vince Sposito Statistical Computing
+Award (2011) and the Snedecor Award (2012) in the Department of Statistics.
+
+\cleardoublepage{}
+
+\phantomsection\addcontentsline{toc}{chapter}{List of Figures}\listoffigures
+
+
+\cleardoublepage{}
+
+\phantomsection\addcontentsline{toc}{chapter}{List of Tables}\listoftables
+
+
+
+\chapter{Introduction\label{chap:intro}}
+
+\pagenumbering{arabic}
+
+The basic idea behind dynamic documents stems from \emph{literate
+programming}\index{literate programming}, a programming paradigm
+conceived by Donald Knuth \citep{knuth1984}. The original idea was
+mainly for writing software: mix the source code and documentation
+together; we can either extract the source code out (called \emph{tangle}\index{tangle})
+or execute the code to get the compiled results (called \emph{weave}\index{weave}).
+A dynamic document is not entirely different from a computer program:
+for a dynamic document, we need to run software packages to compile
+our ideas (often implemented as source code) into numeric or graphical
+output, and insert the output into our literal writings (like documentation).
+
+We explain the idea with a trivial example: suppose we need to write
+the value of $2\pi$ into a report; of course, we can directly write
+the number $\Sexpr{2*pi}$. Now, if I change my mind and I want $6\pi$
+instead, I may have to find a calculator, erase the previous value,
+and write the new answer. Since it is extremely easy for the computer
+to calculate $6\pi$, why not leave this job to the computer completely
+and free oneself from this kind of manual work? What we need to do
+is to leave the source code in the document instead of a hard-coded
+value, and tell the computer how to find and execute the source code.
+Usually we use special markers for computer code in the source report,
+e.g., we can write
+\begin{verse}
+\texttt{The correct answer is \{\{ 6 {*} pi \}\}.}
+\end{verse}
+in which \texttt{\{\{} and \texttt{\}\}} is a pair of markers that
+tell the computer \texttt{6 {*} pi} is the source code and should
+be executed. Note here \texttt{pi} ($\pi$) is a constant in R.
+
+If you know a web scripting language such as PHP (which can embed
+program code into HTML documents), this idea should look familiar.
+The above example shows the \emph{inline} code output, which means
+source code is mixed inline with a sentence. The other type of output
+is the \emph{chunk} output, which gives the results from a whole block
+of code. The chunk output has much more flexibility; for example,
+we can produce graphics and tables from a code chunk.
+
+Figure \ref{fig:intro-plot} was dynamically created with a chunk
+of R code, which is printed below:
+
+\begin{figure}
+<<intro-plot, fig.height=2, par=TRUE>>=
+set.seed(1213)  # for reproducibility of random numbers
+x = cumsum(rnorm(100))
+plot(x, type = 'l', ylab = '$x_{i+1}=x_i + \\epsilon_{i+1}$', xlab = 'step')
+@
+
+\caption[A simulation of the Brownian motion]{A simulation of the Brownian motion for 100 steps: $x_{1}=\epsilon_{1},\, x_{i+1}=x_{i}+\epsilon_{i+1},\,\epsilon_{i}\protect\overset{iid}{\sim}N(0,1),\, i=1,2,\cdots,100$
+\label{fig:intro-plot}}
+\end{figure}
+
+
+If we were to do this by hand, we would have to open R, paste the
+code into the R console to draw the plot, save it as a PDF file, and
+insert it into a \LaTeX{} document with \texttt{\textbackslash{}includegraphics\{\}}.
+This is both tedious for the author and difficult to maintain ---
+supposing we want to change the random seed in \emph{set.seed()},
+increase the number of steps, or use a scatterplot instead of a line
+graph, we will have to update both the source code and the output.
+In practice, the computing and analysis can be far more complicated
+than the toy example in Figure \ref{fig:intro-plot}, and more manual
+work will be required accordingly.
+
+The spirit of dynamic documents may best be described by the philosophy
+of the ESS\index{ESS} project \citep{rossini2004} for the S language:
+
+\begin{VF}
+The source code is real.
+
+\VA{Philosophy for using ESS[S]}{}
+
+\end{VF}
+
+Since the output can be produced by the source code, we can maintain
+the source code only. However, in most cases, the direct output from
+the source code alone does not constitute a report that is readable
+for a human. That is why we need the literate programming paradigm.
+In this paradigm, an author has two tasks:
+\begin{enumerate}
+\item write program code to do computing, and
+\item write narratives to explain what is being done by the program code
+\end{enumerate}
+The traditional approach to doing the second task is to write comments
+for the code, but comments are often limited in terms of expressing
+the full thoughts of the authors. Normally we write our ideas in a
+paper or a report instead of hundreds of lines of code comments.
+
+\begin{VF}
+Let us change our traditional attitude to the construction of programs:
+Instead of imagining that our main task is to instruct a computer what to do,
+let us concentrate rather on explaining to humans what we want the computer to do.
+
+\VA{Donald E. Knuth}{Literate Programming, 1984}
+
+\end{VF}
+
+Technically, literate programming involves three steps:
+\begin{enumerate}
+\item parse the source document and separate code from narratives
+\item execute source code and return results
+\item mix results from the source code with the original narratives
+\end{enumerate}
+These steps can be implemented in software packages, so the authors
+do not need to take care of these technical details. Instead, we only
+control what the output should look like. There are many details that
+we can tune for a report (especially for reports related to data analysis),
+although the idea of literate programming seems to be simple. For
+example, data reports often include tables, and Table \ref{tab:intro-table}
+is a table generated from the R code below using the \emph{kable()}
+function in \textbf{knitr}:
+
+<<intro-table, results='hide', echo=-3>>=
+library(knitr)
+kable(head(mtcars[,1:6]))
+mtcars.tab=kable(head(mtcars[, 1:6]), vline='', toprule=NULL, bottomrule=NULL, output=FALSE)
+@
+
+\begin{table}
+\caption[A subset of the \texttt{mtcars} dataset]{A subset of the \texttt{mtcars} dataset: the first 6 rows and 6 columns.\label{tab:intro-table}}
+
+
+\Sexpr{mtcars.tab}
+\end{table}
+
+
+Think how easy it is to maintain two lines of R code compared to maintaining
+many lines of messy \LaTeX{} code!
+
+Generating reports dynamically by integrating computer code with narratives
+is not only easier, but also closely related to reproducible research,
+which we will discuss in the next chapter.
+
+
+\chapter{Reproducible Research\label{chap:rr}}
+
+Results from scientific research have to be reproducible to be trustworthy.
+We do not want a finding to be merely due to an isolated occurrence,
+e.g., only one specific laboratory researcher can produce the results
+on one specific day, and nobody else can produce the same results
+under the same conditions.
+
+\index{reproducible research}Reproducible research (RR) is one possible
+by-product of dynamic documents, but dynamic documents do not absolutely
+guarantee RR. Because there is usually no human intervention when
+we generate a report dynamically, it is likely to be reproducible
+since it is relatively easy to prepare the same software and hardware
+environment, which is everything we need to reproduce the results.
+However, the meaning of reproducibility can be beyond reproducing
+one result or one report. As a trivial example, one might have done
+a Monte Carlo simulation with a certain random seed and got a good
+estimate of a parameter, but the result was actually due to a ``lucky''
+random seed\index{random seed}. Although we can strictly reproduce
+the estimate, it is not actually reproducible in the general sense.
+Similar problems exist in optimization algorithms, e.g., different
+starting values can lead to different roots of the same equation.
+
+Anyway, dynamic report generation is still an important step towards
+RR. In this chapter, we discuss a selection of the RR literature and
+practices of RR.
+
+
+\section{Literature}
+
+The term reproducible research was first proposed by Jon Claerbout
+at Stanford University \citep{fomel2009}. The idea is that the final
+product of research is not only the paper itself, but also the full
+computational environment used to produce the results in the paper
+such as the code and data necessary for reproduction of the results
+and building upon the research.
+
+Similarly, \citet{buckheit1995} pointed out the essence of the scholarship
+of an article as follows:
+
+\begin{VF}
+An article about computational science in a scientific publication
+is not the scholarship itself, it is merely advertising of the scholarship.
+The actual scholarship is the complete software development environment and
+the complete set of instructions which generated the figures.
+
+\VA{D. Donoho}{WaveLab and Reproducible Research}
+
+\end{VF}
+
+That was well said! Fortunately, journals have been moving in that
+direction as well. For example, \citet{peng2009} provided detailed
+instructions to authors on the criteria of reproducibility and how
+to submit materials for reproducing the paper in the \emph{Biostatistics}
+journal.
+
+At the technical level, RR is often related to literate programming
+\citep{knuth1984}, a paradigm conceived by Donald Knuth to integrate
+computer code with software documentation in one document. However,
+early implementations like WEB\index{WEB} \citep{knuth1983} and
+Noweb\index{Noweb} \citep{ramsey1994} were not directly suitable
+for data analysis and report generation. There are other tools on
+this path of documentation generation, such as \textbf{roxygen2} \citep{R-roxygen2},
+which is an R implementation of Doxygen \citep{heesch2008}. Sweave\index{Sweave}
+\citep{leisch2002} was among the first implementations for dealing
+with dynamic documents in R \citep{ihaka1996,R-base}. There are still
+a number of challenges that were not solved by the existing tools;
+for example, Sweave is closely tied to \LaTeX{} and hard to extend.
+The \textbf{knitr} package \citep{R-knitr} was built upon the ideas
+of previous tools with a framework redesign, enabling easy and fine
+control of many aspects of a report. We will introduce other tools
+in Chapter \ref{chap:other}.
+
+An overview of literate programming applied to statistical analysis
+can be found in \citet{rossini2002}. \citet{gentleman2004} introduced
+general concepts of literate programming documents for statistical
+analysis, with a discussion of the software architecture. \citet{gentleman2005}
+is a practical example based on \citet{gentleman2004}, using an R
+package \textbf{GolubRR} to distribute reproducible analysis. \citet{baggerly2004}
+revealed several problems that may arise with the standard practice
+of publishing data analysis results, which can lead to false discoveries
+due to lack of details for reproducibility (even with datasets supplied).
+Instead of separating results from computing, we can put everything
+in one document (called a \emph{compendium} in \citet{gentleman2004}),
+including the computer code and narratives. When we compile this document,
+the computer code will be executed, giving us the results directly.
+
+
+\section{Good and Bad Practices}
+
+The key to keep in mind for RR is that other people should be able
+to reproduce our results, therefore we should try our best to make
+our computation \emph{portable}. We discuss some good practices for
+RR below and explain why it can be bad not to follow them.
+\begin{itemize}
+\item Manage all source files under the same directory and use relative
+paths whenever possible: absolute paths can break reproducibility,
+e.g., a data file like \textsf{C:/Users/someone/foo.csv} or \textsf{/home/someone/foo.csv}
+may only exist in one computer, and other people may not be able to
+read it since the absolute path is likely to be different in their
+hard disk. If we keep everything under the same directory, we can
+read a data file with \texttt{read.csv('foo.csv')} (if it is under
+the current working directory) or \texttt{read.csv('../data/foo.csv')}
+(go one level up and find the file under the \textsf{data/} directory);
+when we disseminate the results, we can make an archive of the whole
+directory (e.g., as a zip package).
+\item Do not change the working directory after the computing has started:
+\emph{setwd()} is the function in R to set the working directory,
+and it is not uncommon to see \texttt{setwd('path/to/some/dir')} in
+user's code, which is bad because it is not only an absolute path,
+but also has a global effect on the rest of the source document. In
+that case, we have to keep in mind that all relative paths may need
+adjustments since the root directory has changed, and the software
+may write the output in an unexpected place (e.g., the figures are
+expected to be generated in the \textsf{./figures/} directory, but
+are actually written to \textsf{./data/figures/} instead if we \texttt{setwd('./data/')}).
+If we have to set the working directory at all, do it in the very
+beginning of an R session; most of the editors to be introduced in
+Chapter \ref{chap:editors} follow this rule, and the working directory
+is set to the directory of the source document before \textbf{knitr}
+is called to compile documents.
+\item Compile the documents in a clean R session: existing R objects in
+the current R session may ``contaminate'' the results in the output.
+It is fine if we write a report by accumulating code chunks one by
+one and running them interactively to check the results, but in the
+end we should compile a report in the batch mode with a new R session
+so all the results are freshly generated from the code.
+\item Avoid the commands that require human interaction: human input can
+be highly unpredictable, e.g., we do not know for sure which file
+the user will choose if we pop up a dialog box asking the user to
+choose a data file. Instead of using functions like \emph{file.choose()}
+to input a file to \emph{read.table()}, we should write the filename
+explicitly, e.g., \texttt{read.table('a-specific-file.txt')}.
+\item Avoid environment variables for data analysis: while environment variables
+are often heavily used in programming for configuration purposes,
+it is ill-advised to use them in data analysis because they require
+additional instructions for users to set up, and humans can simply
+forget to do this. If there are any options to set up, do it inside
+the source document.
+\item Attach \emph{sessionInfo()} and instructions on how to compile this
+document: the session information makes a reader aware of the software
+environment, such as the version of R, the operating system and add-on
+packages used. Sometimes it is not as simple as calling one single
+function to compile a document, and we have to make it clear how to
+compile it if additional steps are required; but it is better to provide
+the instructions in the form of a computer script, e.g., a shell script,
+a Makefile, or a batch file.
+\end{itemize}
+These practices are not necessarily restricted to the R language,
+although we used R for examples. The same rules also apply to other
+computing environments.
+
+Note that literate programming tools often require users to compile
+the documents in batch mode, and it is good for reproducible research,
+but the batch mode can be cumbersome for exploratory data analysis.
+When we have not decided what to put in the final document, we may
+need to interact with the data and code frequently, and it is not
+worth compiling the whole document each time we update the code. This
+problem can be solved by a capable editor such as RStudio and Emacs/ESS,
+which are introduced in Chapter \ref{chap:editors}. In these editors,
+we can interact with the code and explore the data freely (e.g., send
+or write R code in an associated R session), and once we finish the
+coding work, we can compile the whole document in the batch mode to
+make sure all the code works in a clean R session.
+
+
+\section{Barriers}
+
+Despite all the advantages of RR, there are some practical barriers,
+and here is a non-exhaustive list:
+\begin{itemize}
+\item the data can be huge: for example, it is common that high energy physics
+and next-generation sequencing data in biology can produce tens of
+terabytes of data, and it is not trivial to archive the data with
+the reports and distribute them
+\item confidentiality of data: it may be prohibited to release the raw data
+with the report, especially when it is involved with human subjects
+due to the confidentiality issues
+\item software version and configuration: a report may be generated with
+an old version of a software package that is no longer available,
+or with a software package that compiles differently on different
+operating systems
+\item competition: one may choose not release the code or data with the
+report due to the fact that potential competitors can easily get everything
+for free, whereas the original authors have invested a large amount
+of money and effort
+\end{itemize}
+We certainly should not expect all reports in the world to be publicly
+available and strictly reproducible, but it is better to share even
+mediocre or flawed code or problematic datasets than not to share
+anything at all. Instead of persuading people into RR by policies,
+we may try to create tools that make RR easier than cut-and-paste,
+and \textbf{knitr} is such an attempt. The success of RPubs\index{RPubs}
+(\url{http://rpubs.com}) is evidence that an easy tool can quickly
+promote RR, because users enjoy using it. Readers can find hundreds
+of reports contributed by users in the above Web site. It is fairly
+common to see student homework and exercises there, and once the students
+are trained in this manner, we may expect more reproducible scientific
+research in the future.
+
+
+\chapter{A First Look\label{chap:first}}
+
+The \textbf{knitr} package is a general-purpose literate programming
+engine --- it supports document formats including \LaTeX{}, HTML,
+and Markdown (see Chapter \ref{chap:formats}), and programming languages
+such as R, Python, awk, C++, and shell scripts (Chapter \ref{chap:engines}).
+Before we get started, we need to install \textbf{knitr} in R. Then
+we will introduce the basic concepts with minimal examples. Finally,
+we will show how to generate reports quickly from pure R scripts,
+which can be useful for beginners who do not know anything about dynamic
+documents.
+
+
+\section{Setup}
+
+Since \textbf{knitr} is an R package, it can be installed from CRAN
+in the usual way in R:
+
+<<install-knitr, eval=FALSE>>=
+install.packages('knitr', dependencies=TRUE)
+@
+
+Note here that \texttt{dependencies = TRUE} is optional, and will
+install all packages that are not absolutely necessary but can enhance
+this package with some useful features. The development version is
+hosted on Github\index{Github}: \url{https://github.com/yihui/knitr},
+and you can always check out the latest development version, which
+may not be stable but contains the latest bug fixes and new features.
+If you have any problems with \textbf{knitr}, the first thing to check
+is its version:
+
+<<knitr-version, eval=FALSE>>=
+packageVersion('knitr')
+# if not the latest version, run
+update.packages()
+@
+
+If you choose \LaTeX{} as the typesetting tool, you may need to install
+MiK\TeX{} (Windows, \url{http://miktex.org/}), Mac\TeX{} (Mac OS,
+\url{http://tug.org/mactex/}) or \TeX{}Live (Linux, \url{http://tug.org/texlive/}).
+If you are going to work with HTML or Markdown, nothing else needs
+to be installed, since the output will be Web pages, which you can
+view with a Web browser.
+
+Once we have \textbf{knitr} installed, we can compile source documents
+using the function \emph{knit()\index{knit()}}, e.g.,
+
+<<knitr-usage, eval=FALSE>>=
+library(knitr)
+knit('your-file.Rnw')
+@
+
+A \textsf{{*}.Rnw} file is usually a \LaTeX{} document with R code
+embedded in it, as we will see in the following section and Chapter
+\ref{chap:formats}, in which more types of documents will be introduced.
+
+
+\section{Minimal Examples}
+
+We use two minimal examples written in \LaTeX{} and Markdown, respectively,
+to illustrate the structure of dynamic documents. We do not discuss
+the syntax of \LaTeX{} or Markdown for the time being (see Chapter
+\ref{chap:formats} instead). For the sake of simplicity, the \texttt{cars}
+dataset in base R is used to build a simple linear regression model.
+Type \texttt{?cars} in R to see detailed documentation. Basically
+it has two variables, speed and distance:
+
+<<str-cars>>=
+str(cars)
+@
+
+
+\subsection{An Example in \protect\LaTeX{}}
+
+Figure \ref{fig:minimal-rnw} is a full example of R code embedded
+in \LaTeX{}\index{LaTeX@\LaTeX{}}; we call this kind of documents
+\emph{Rnw documents\index{Rnw document}} hereafter because their
+filename extension is Rnw by convention. If we save it as a file \textsf{minimal.Rnw}
+and run \texttt{knit('minimal.Rnw')} in R as described before, \textbf{knitr}
+will generate a \LaTeX{} output document named \textsf{minimal.tex}.
+For those who are familiar with \LaTeX{}, you can compile this document
+to PDF via \texttt{pdflatex}. Figure \ref{fig:minimal-latex} is the
+PDF document compiled from the Rnw document.
+
+\begin{figure}
+\framebox{\parbox[t]{1\columnwidth}{%
+\verbatiminput{knitr-examples/048-cars-demo.Rnw}%
+}}
+
+\caption[The source of a minimal Rnw document]{The source of a minimal Rnw document: see output in Figure \ref{fig:minimal-latex}.\label{fig:minimal-rnw}}
+\end{figure}
+
+
+\begin{figure}
+\begin{centering}
+\framebox{\parbox[t]{1\columnwidth}{%
+\begin{center}
+\includegraphics[bb=1.7in 2.8500000000000001in 6.7000000000000002in 8.75in,clip,width=1\linewidth]{knitr-examples/048-cars-demo}
+\par\end{center}%
+}}
+\par\end{centering}
+
+\caption[A minimal example in \protect\LaTeX{}]{A minimal example in \protect\LaTeX{} with an R code chunk, a plot, and numeric
+output (regression coefficient).\label{fig:minimal-latex}}
+\end{figure}
+
+
+What is essential here is how we embedded R code in \LaTeX{}. In an
+Rnw document, \texttt{<\textcompwordmark{}<>\textcompwordmark{}>=}
+marks the beginning of code chunks\index{code chunks}, and \texttt{@}
+terminates a code chunk (this description is not rigorous but is often
+easier to understand); we have four lines of R code between the two
+markers in this example to draw a scatterplot, fit a linear model,
+and add a regression line to the scatterplot. The command \texttt{\textbackslash{}Sexpr\{\}}
+is used to embed inline R code\index{inline R code}, e.g., \texttt{coef(fit){[}2{]}}
+in this example. We can write chunk options\index{chunk options}
+for a code chunk between \texttt{<\textcompwordmark{}<} and \texttt{>\textcompwordmark{}>=};
+the chunk options in this example specified the plot size to be 4
+by 3 inches (\texttt{fig.width} and \texttt{fig.height}), and plots
+should be aligned in the center (\texttt{fig.align}).
+
+In this minimal example, we have most basic elements of a report:
+\begin{enumerate}
+\item title, author, and date
+\item model description
+\item data and computation
+\item graphics
+\item numeric results
+\end{enumerate}
+All the output is generated dynamically from R. Even if the data has
+changed, we do not need to redo the report from the ground up, and
+the output will be updated accordingly if we update the data and recompile
+the report.
+
+
+\subsection{An Example in Markdown\label{sub:minimal-markdown}}
+
+\LaTeX{} may look overwhelming to beginners due to the large number
+of commands. By comparison, Markdown\index{Markdown} \citep{markdown}
+is a much simpler format. Figure \ref{fig:minimal-rmd} is a Markdown
+example doing the same analysis with the previous example:
+
+\begin{figure}
+\framebox{\parbox[t]{1\columnwidth}{%
+\verbatiminput{knitr-examples/049-cars-demo.Rmd}%
+}}
+
+\caption[The source of a minimal Rmd document]{The source of a minimal Rmd document: see output in Figure \ref{fig:minimal-markdown}.\label{fig:minimal-rmd}}
+\end{figure}
+
+
+The ideal output from Markdown is an HTML\index{HTML} Web page, as
+shown in Figure \ref{fig:minimal-markdown} (in Mozilla Firefox).
+Similarly, we can see the syntax for R code in a Markdown document:
+\verb|```{r}| opens a code chunk, \verb|```| terminates a chunk,
+and inline R code can be put inside \verb|`r `|, where \verb|`|
+is a backtick.
+
+\begin{figure}
+\begin{centering}
+\includegraphics[interpolate,width=\maxwidth]{figure-shot/minimal-browser}
+\par\end{centering}
+
+\caption[A minimal example in Markdown]{A minimal example in Markdown with the same analysis as in Figure
+\ref{fig:minimal-latex}, but the output is HTML instead of PDF now.\label{fig:minimal-markdown}}
+\end{figure}
+
+
+A slightly longer example in \textbf{knitr} is a demo named \texttt{notebook}\index{notebook},
+which is based on Markdown. It shows not only the potential power
+of Markdown, but also the possibility of building Web applications
+with \textbf{knitr}. To watch the demo, run the code below:
+
+<<demo-notebook, eval=FALSE>>=
+if (!require('shiny')) install.packages('shiny')
+demo('notebook', package = 'knitr')
+@
+
+Your default Web browser will be launched to show a Web notebook.
+The source code is in the left panel, and the live results are in
+the right panel. You are free to experiment with the source code and
+re-compile the notebook.
+
+
+\section{Quick Reporting\label{sec:stitch}}
+
+If a user only has basic knowledge of R but knows nothing about \textbf{knitr},
+or one does not want to write anything other than an R script, it
+is also possible to generate a quick report from this R script using
+the \emph{stitch()\index{stitch()}} function.
+
+The basic idea of \emph{stitch()} is that \textbf{knitr} provides
+a template of the source document with some default settings, so that
+the user only needs to feed this template with an R script (as one
+code chunk); then \textbf{knitr} will compile the template to a report.
+Currently it has built-in templates for \LaTeX{}, HTML, and Markdown.
+The usage is like this:
+
+<<stitch-usage, eval=FALSE>>=
+library(knitr)
+stitch('your-script.R')
+@
+
+
+\section{Extracting R Code\label{sec:purl-brief}}
+
+For a literate programming document, we can either compile it to a
+report (run the code), or extract the program code in it. They are
+called ``weaving''\index{weave} and ``tangling\index{tangle},''
+respectively. Apparently the function \emph{knit()} is for weaving,
+and the corresponding tangling function is \emph{purl()\index{purl()}}
+in \textbf{knitr}. For example,
+
+<<purl-usage, eval=FALSE>>=
+library(knitr)
+purl('your-file.Rnw')
+purl('your-file.Rmd')
+@
+
+The result of tangling is an R script; in the above examples, the
+default output will be \textsf{your-file.R}, which consists of all
+code chunks in the source document.
+
+So far we have been introducing the command line usage of \textbf{knitr},
+and it is often tedious to type the commands repeatedly. In the next
+chapter, we show how a decent editor can help edit and compile the
+source document with one single mouse click or a keyboard shortcut.
+
+
+\chapter{Editors\label{chap:editors}}
+
+
+\section{RStudio\label{sec:rstudio}}
+
+
+\section{\protect\LyX{}\label{sec:lyx}}
+
+
+\section{Emacs/ESS}
+
+
+\section{Other Editors}
+
+
+\chapter{Document Formats\label{chap:formats}}
+
+
+\section{Input Syntax\label{sec:input-syntax}}
+
+
+\subsection{Chunk Options\label{sub:chunk-options}}
+
+
+\subsection{Chunk Label}
+
+
+\subsection{Global Options}
+
+
+\subsection{Chunk Syntax}
+
+
+\section{Document Formats}
+
+
+\subsection{Markdown\label{sub:syntax-markdown}}
+
+
+\subsection{\protect\LaTeX{}}
+
+
+\subsection{HTML}
+
+
+\subsection{reStructuredText\label{sub:reStructuredText}}
+
+
+\subsection{Customization}
+
+
+\section{Output Renderers\label{sec:output-renderers}}
+
+
+\section{R Scripts\label{sec:r-scripts}}
+
+
+\chapter{Text Output\label{chap:text}}
+
+
+\section{Inline Output\label{sec:inline-output}}
+
+
+\section{Chunk Output}
+
+
+\subsection{Chunk Evaluation}
+
+
+\subsection{Code Formatting\label{sub:code-formatting}}
+
+
+\subsection{Code Decoration\label{sub:code-decoration}}
+
+
+\subsection{Show/Hide Output\label{sub:hide-output}}
+
+
+\section{Tables}
+
+
+\section{Themes}
+
+
+\chapter{Graphics\label{chap:graphics}}
+
+
+\section{Graphical Devices}
+
+
+\subsection{Custom Device}
+
+
+\subsection{Choose a Device}
+
+
+\subsection{Device Size}
+
+
+\subsection{More Device Options}
+
+
+\subsection{Encoding}
+
+
+\subsection{The Dingbats Font}
+
+
+\section{Plot Recording\label{sec:plot-recording}}
+
+
+\section{Plot Rearrangement}
+
+
+\subsection{Animation\label{sub:animation}}
+
+
+\subsection{Alignment}
+
+
+\section{Plot Size in Output\label{sec:plot-size}}
+
+
+\section{Extra Output Options}
+
+
+\section{The tikz Device\label{sec:tikz-device}}
+
+
+\section{Figure Environment}
+
+
+
+
+\section{Figure Path}
+
+
+\chapter{Cache\label{chap:cache}}
+
+
+\section{Implementation}
+
+
+\section{Write Cache}
+
+
+\section{When to Update Cache\label{sec:cache-update}}
+
+
+\section{Side Effects\label{sec:side-effects}}
+
+
+\section{Chunk Dependencies}
+
+
+\subsection{Manual Dependency}
+
+
+\subsection{Automatic Dependency}
+
+
+\chapter{Cross Reference\label{chap:reference}}
+
+
+\section{Chunk Reference}
+
+
+\subsection{Embed Code Chunks}
+
+
+\subsection{Reuse Whole Chunks\label{sub:reuse-whole-chunks}}
+
+
+\section{Code Externalization\label{sec:code-externalization}}
+
+
+\subsection{Labeled Chunks}
+
+
+\subsection{Line-based Chunks\label{sub:read-chunk}}
+
+
+\section{Child Documents\label{sec:child-documents}}
+
+
+\subsection{Input Child Documents}
+
+
+\subsection{Child Documents as Templates}
+
+
+\subsection{Standalone Mode}
+
+
+\chapter{Hooks\label{chap:hooks}}
+
+
+\section{Chunk Hooks}
+
+
+\subsection{Create Chunk Hooks}
+
+
+\subsection{Trigger Chunk Hooks}
+
+
+\subsection{Hook Arguments}
+
+
+\subsection{Hooks and Chunk Options}
+
+
+\subsection{Write Output}
+
+
+\section{Examples}
+
+
+\subsection{Crop Plots}
+
+
+\subsection{rgl Plots\label{sub:rgl-plots}}
+
+
+\subsection{Manually Save Plots}
+
+
+\subsection{Optimize PNG Plots}
+
+
+\subsection{Close an rgl Device}
+
+
+\subsection{WebGL}
+
+
+\chapter{Language Engines\label{chap:engines}}
+
+
+\section{Design}
+
+
+\subsection{The Engine Function}
+
+
+\subsection{Engine Options}
+
+
+\section{Languages and Tools}
+
+
+\subsection{C++\label{sub:C++}}
+
+
+\subsection{Interpreted Languages}
+
+
+\subsection{TikZ}
+
+
+\subsection{Graphviz}
+
+
+\subsection{Highlight}
+
+
+\chapter{Tricks and Solutions\label{chap:tricks}}
+
+
+\section{Chunk Options}
+
+
+\subsection{Option Aliases\label{sub:option-aliases}}
+
+
+\subsection{Option Templates\label{sub:option-templates}}
+
+
+\subsection{Program Chunk Options\label{sub:program-chunk-opts}}
+
+
+\subsection{Code in Appendix}
+
+
+\section{Package Options\label{sec:package-options}}
+
+
+\section{Typesetting}
+
+
+\subsection{Output Width}
+
+
+\subsection{Message Colors}
+
+
+\subsection{Box Padding}
+
+
+\subsection{Beamer\label{sub:beamer}}
+
+
+\subsection{Suppress Long Output}
+
+
+\subsection{Escape Special Characters\label{sub:escape-chars}}
+
+
+\subsection{The Example Environment}
+
+
+\section{Utilities}
+
+
+\subsection{R Package Citation\label{sub:write-bib}}
+
+
+\subsection{Image URI\label{sub:image-uri}}
+
+
+\subsection{Upload Images\label{sub:imgur-upload}}
+
+
+\subsection{Compile Documents}
+
+
+\subsection{Construct Code Chunks\label{sub:construct-chunks}}
+
+
+\subsection{Extract Source Code}
+
+
+\subsection{Reproducible Simulation\label{sub:rand-seed}}
+
+
+\subsection{R Documentation\label{sub:r-documentation}}
+
+
+\subsection{Rst2pdf}
+
+
+\subsection{Package Demos}
+
+
+\subsection{Pretty Printing}
+
+
+\subsection{A Macro Preprocessor}
+
+
+\section{Debugging}
+
+
+\section{Multilingual Support}
+
+
+\chapter{Publishing Reports\label{chap:publish}}
+
+
+\section{RStudio}
+
+
+\section{Pandoc}
+
+
+\section{HTML5 Slides}
+
+
+\section{Jekyll\label{sec:jekyll}}
+
+
+\section{WordPress}
+
+
+\chapter{Applications\label{chap:applications}}
+
+
+\section{Homework}
+
+
+\section{Web Site and Blogging}
+
+
+\subsection{Vistat and Rcpp Gallery}
+
+
+\subsection{UCLA R Tutorial}
+
+
+\subsection{The cda and RHadoop Wiki}
+
+
+\subsection{The ggbio Package}
+
+
+\subsection{Geospatial Data in R and Beyond}
+
+
+\section{Package Vignettes}
+
+
+\subsection{PDF Vignette}
+
+
+\subsection{HTML Vignette}
+
+
+\section{Books}
+
+
+\subsection{This Book}
+
+
+\subsection{The Analysis of Data}
+
+
+\subsection{The Statistical Sleuth in R}
+
+
+\chapter{Other Tools\label{chap:other}}
+
+
+\section{Sweave\label{sec:sweave}}
+
+
+\subsection{Syntax}
+
+
+\subsection{Options}
+
+
+\subsection{Problems}
+
+
+\section{Other R Packages}
+
+
+\section{Python Packages}
+
+
+\subsection{Dexy}
+
+
+\subsection{Python\protect\TeX{}}
+
+
+\subsection{IPython}
+
+
+\section{More Tools}
+
+
+\subsection{Org-mode}
+
+
+\subsection{SASweave}
+
+
+\subsection{Office}
+
+\appendix
+
+\chapter{Internals\label{chap:internals}}
+
+
+\section{Documentation\label{sec:knitr-documentation}}
+
+
+\section{Closures}
+
+
+\section{Implementation}
+
+
+\subsection{Parser}
+
+
+\subsection{Chunk Hooks}
+
+
+\subsection{Option Aliases}
+
+
+\subsection{Cache}
+
+
+\subsection{Compatibility with Sweave}
+
+
+\subsection{Concordance}
+
+
+\section{Syntax}
+
+<<write-bib, include=FALSE, bib=file.info('cache-book/__packages')[,'size']>>=
+write_bib(c(readLines('cache-book/__packages'), 'tikzDevice', 'xtable', 'rgl', 'markdown', 'evaluate', 'formatR', 'R2SWF', 'rggobi', 'Rcpp', 'slidify', 'brew', 'R2HTML', 'corrplot', 'roxygen2', 'Hmisc', 'highr'),
+'DDR-packages.bib')
+@
+
+
+
+\cleardoublepage{}
+
+\bibliographystyle{apalike}
+\phantomsection\addcontentsline{toc}{chapter}{\bibname}\bibliography{DDR-Yihui-Xie,DDR-packages}
+
+
+\printindex{}
+
+\end{document}
