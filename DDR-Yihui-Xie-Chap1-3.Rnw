@@ -211,8 +211,8 @@ Network) as free and open-source software: \url{http://cran.r-project.org}.
 Their version information for this book can be found in the session
 information:
 
-<<session-info, cache=FALSE, tidy.opts=list(replace.assign=FALSE)>>=
-print(sessionInfo(), locale=FALSE)
+<<session-info, cache=FALSE>>=
+print(sessionInfo(), FALSE)
 @
 
 The \textbf{knitr} package is documented on the Web site \url{http://yihui.name/knitr/},

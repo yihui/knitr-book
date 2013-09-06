@@ -798,12 +798,12 @@ status open
 
 \begin_layout Plain Layout
 
-<<session-info, cache=FALSE, tidy.opts=list(replace.assign=FALSE)>>=
+<<session-info, cache=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
 
-print(sessionInfo(), locale=FALSE)
+print(sessionInfo(), FALSE)
 \end_layout
 
 \begin_layout Plain Layout
