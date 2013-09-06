@@ -1,0 +1,5 @@
+#  \DeclareLaTeXClass[krantz]{book (Krantz)}
+
+Format 35
+
+Input book.layout
