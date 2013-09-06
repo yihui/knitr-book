@@ -1,11 +1,4 @@
-# Dynamic Documents with R and knitr
-
-In the very beginning, I planned to write this book with Markdown, but later
-I changed my mind and wrote it in LyX instead. Please ignore this
-repository; it is not the real source of the book that was published by
-Chapman & Hall: <http://www.crcpress.com/product/isbn/9781482203530>
-
----
+# Dynamic Report Generation with R
 
 This book is mainly about the R package **knitr**, which is on CRAN (<http://cran.r-project.org/package=knitr>) and has detailed documentation and examples (<http://yihui.name/knitr/>). I think it may be a good idea to organize these materials in a better form, and explain more details about **knitr** which are not covered in the online documentation. It is also a good opportunity to [eat my own dog food](http://en.wikipedia.org/wiki/Eating_your_own_dog_food) and see how **knitr** performs in the real world.
 
@@ -33,12 +26,3 @@ All source files are under the [`source`](https://github.com/yihui/knitr-book/so
 Currently I need help on designing the CSS styles for the HTML and EPub output; I do not have much time for that. The default style is not optimal for reading. You are welcome to contribute if you know `pandoc` and CSS, and you can probably look at [bootstrap](http://twitter.github.com/bootstrap/) for an appealing design.
 
 If you have more time to kill, I also need help on the TeX style so that the PDF output looks better. I just picked up three free fonts in my library and throwed them to XeLaTeX.
-
-## Contact
-
-GitHub issues (<https://github.com/yihui/knitr-book/issues>) is the preferred way for feedbacks. You can also reach me by email:
-
-```bash
-echo oybuwycxy.trpb | tr bopcrbtucwxyc+ exmiaen@iyuih
-```
-
