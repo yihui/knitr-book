@@ -37,6 +37,11 @@ you can change the default device to `pdf`:
 opts_chunk$set(dev = 'pdf')  # or cairo_pdf
 ```
 
+Be sure to read the session info in the preface because your R packages may
+not be up-to-date to reproduce the PDF. Normally I use development versions
+of my packages, because I often find little problems that I need to solve
+for the book, and these changes will end up in the development versions.
+
 ## Contact
 
 GitHub issues (<https://github.com/yihui/knitr-book/issues>) is the
