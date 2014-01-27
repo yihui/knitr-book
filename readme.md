@@ -28,15 +28,6 @@ The PDF of the first three chapters can be downloaded
 
 If you do not use LyX, you can simply open the Rnw file and start from there.
 
-Note I was using the tikz device for graphics in this book, and
-unfortunately the **tikzDevice** package has been archived on CRAN for a
-long time, so some users might find it difficult to install. In that case,
-you can change the default device to `pdf`:
-
-```s
-opts_chunk$set(dev = 'pdf')  # or cairo_pdf
-```
-
 Be sure to read the session info in the preface because your R packages may
 not be up-to-date to reproduce the PDF. Normally I use development versions
 of my packages, because I often find little problems that I need to solve
