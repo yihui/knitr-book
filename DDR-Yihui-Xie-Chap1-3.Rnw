@@ -1,4 +1,4 @@
-%% LyX 2.0.6 created this file.  For more info, see http://www.lyx.org/.
+%% LyX 2.0.7 created this file.  For more info, see http://www.lyx.org/.
 %% Do not edit unless you really know what you are doing.
 \documentclass{krantz}
 \usepackage{mathpazo}
@@ -124,9 +124,9 @@ correctly generated on blank pages)
 \thispagestyle{empty}
 
 \begin{center}
-{\Large{To my parents\bigskip{}
-}}\\
-{\Large{Shaobai Xie }}\emph{\Large{and}}{\Large{ Guolan Xie}}
+{\Large{}To my parents\bigskip{}
+}\\
+{\Large{}Shaobai Xie }\emph{\Large{}and}{\Large{} Guolan Xie}
 \par\end{center}{\Large \par}
 
 \newpage{}
