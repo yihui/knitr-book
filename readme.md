@@ -29,7 +29,10 @@ chunk in the LyX or Rnw file).
 The PDF of the first three chapters can be downloaded
 [here :arrow_down:](https://bitbucket.org/stat/knitr/downloads/DDR-Yihui-Xie-Chap1-3.pdf).
 
-If you do not use LyX, you can simply open the Rnw file and start from there.
+For Linux users, the minimal version of LyX for this book is 2.0.3 (as you can
+get from Debian). For Windows/Mac OS X users, just download the latest binaries
+from the [LyX website](http://lyx.org). If you do not use LyX, you can simply
+open the Rnw file and start from there.
 
 Be sure to read the session info in the preface because your R packages may
 not be up-to-date to reproduce the PDF. Normally I use development versions
