@@ -48,7 +48,7 @@
 library(knitr)
 options(width=55, replace.assign=TRUE)
 opts_chunk$set(cache=TRUE, dev='tikz', fig.path='figure-book/', cache.path='cache-book/', fig.width=5, fig.height=5,
-               fig.align='center', error=FALSE)
+               fig.align='center', error=FALSE, tidy=TRUE)
 
 knit_hooks$set(par = function(before, options, envir) {
     if (before && options$fig.show != "none") {

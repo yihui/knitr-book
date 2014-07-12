@@ -113,7 +113,7 @@ book/', fig.width=5, fig.height=5,
 
 \begin_layout Plain Layout
 
-               fig.align='center', error=FALSE)
+               fig.align='center', error=FALSE, tidy=TRUE)
 \end_layout
 
 \begin_layout Plain Layout
