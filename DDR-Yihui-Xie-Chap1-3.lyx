@@ -102,7 +102,7 @@ library(knitr)
 
 \begin_layout Plain Layout
 
-options(width=55, replace.assign=TRUE)
+options(width=55, formatR.arrow=TRUE)
 \end_layout
 
 \begin_layout Plain Layout
