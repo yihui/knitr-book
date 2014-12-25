@@ -27,7 +27,7 @@ class provided by Chapman & Hall, and I wrote a simple LyX layout file
 chunk in the LyX or Rnw file).
 
 The PDF of the first three chapters can be downloaded
-[here :arrow_down:](https://bitbucket.org/stat/knitr/downloads/DDR-Yihui-Xie-Chap1-3.pdf).
+[here :arrow_down:](https://github.com/yihui/knitr/releases/download/doc/DDR-Yihui-Xie-Chap1-3.pdf).
 
 For Linux users, the minimal version of LyX for this book is 2.0.3 (as you can
 get from Debian). For Windows/Mac OS X users, just download the latest binaries
