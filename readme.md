@@ -6,8 +6,8 @@ interested in the Markdown source, please see the [markdown](markdown)
 directory.
 
 Now this book has been published by [Chapman &
-Hall](http://www.crcpress.com/product/isbn/9781482203530). You can also find
-it on [Amazon](http://www.amazon.com/gp/product/1482203537). There is a
+Hall](http://www.crcpress.com/product/isbn/978-1498716963). You can also find
+it on [Amazon](http://amzn.com/1498716962). There is a
 [book review](http://www.jstatsoft.org/v56/b02/) published in the Journal of
 Statistical Software, which may give you a better idea of this book than my
 own introduction.
