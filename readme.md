@@ -7,7 +7,7 @@ directory.
 
 Now this book has been published by [Chapman &
 Hall](https://www.crcpress.com/Dynamic-Documents-with-R-and-knitr-Second-Edition/Xie/9781498716963). You can also find
-it on [Amazon](http://amzn.com/1498716962). There is a
+it on [Amazon](https://www.amazon.com/dp/1498716962/). There is a
 [book review](http://www.jstatsoft.org/v56/b02/) published in the Journal of
 Statistical Software, which may give you a better idea of this book than my
 own introduction.
